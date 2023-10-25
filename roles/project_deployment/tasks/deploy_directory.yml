@@ -12,7 +12,7 @@
   ansible.builtin.file:
     path: "{{ project_dir + '/' + file.path.split(project_name + '/')[1:] | join(project_name + '/') }}"
     mode: "{{ docker_directory_mode if not \
-      (project_dir + '/' + file.path.split(project_name + '/')[1:] | join(project_name + '/')) | any_regex_matches(regex_secret_remote_paths) \
+      (project_dir + '/' + file.path.split(project_name + '/')[1:] | join(project_name + '/')) | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
       else docker_secret_directory_mode }}"
     owner: "{{ docker_owner }}"
     group: "{{ docker_group }}"

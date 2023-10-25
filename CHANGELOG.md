@@ -1,3 +1,7 @@
+# v1.0.2
+## project_deployment
+- fix name for filters
+
 # v1.0.1
 - fix CHANGELOG
 

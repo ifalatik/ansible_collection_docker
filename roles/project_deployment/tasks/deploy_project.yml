@@ -27,7 +27,7 @@
     path: "{{ project_dir }}"
     state: "directory"
     mode: "{{ docker_directory_mode if not \
-      project_dir | any_regex_matches(regex_secret_remote_paths) \
+      project_dir | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
       else docker_secret_directory_mode }}"
     owner: "{{ docker_owner }}"
     group: "{{ docker_group }}"
@@ -48,7 +48,7 @@
 
 - name: "Collect docker-volumes for project {{ project_name }}"
   ansible.builtin.set_fact:
-    project_docker_volumes: "{{ ((project_docker_volumes) + (service.value.volumes | default([]) | non_local_paths)) | unique }}"
+    project_docker_volumes: "{{ ((project_docker_volumes) + (service.value.volumes | default([]) | ifalatik.docker.non_local_paths)) | unique }}"
   with_dict: "{{ project.value.services }}"
   loop_control:
     loop_var: service
