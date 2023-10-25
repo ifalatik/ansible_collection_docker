@@ -1,0 +1,6 @@
+# This file contains ignores rule violations for ansible-lint
+.github/workflows/release.yml yaml[line-length]
+galaxy.yml galaxy[tags]
+galaxy.yml yaml[empty-lines]
+galaxy.yml yaml[indentation]
+meta/runtime.yml meta-runtime[unsupported-version]
