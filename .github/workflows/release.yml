@@ -35,7 +35,7 @@ jobs:
           cp $files build/src
           cp -rf $directories build/src
         env:
-          files: "README.md galaxy.yml"  # "README.md LICENSE ansible.cfg galaxy.yml"
+          files: "README.md CHANGELOG.md galaxy.yml"  # "README.md LICENSE ansible.cfg galaxy.yml"
           directories: "roles meta plugins"  # "inventories playbooks vars docs"
 
       - name: Build Ansible Collection
