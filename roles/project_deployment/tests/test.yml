@@ -1,8 +1,9 @@
 ---
 
-- hosts: localhost
+- name: Run role test
+  hosts: localhost
   remote_user: root
   roles:
-    - docker_project_deployment
+    - ifalatik.docker.project_deployment
 
 ...
