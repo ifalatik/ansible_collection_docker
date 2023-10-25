@@ -25,7 +25,12 @@ services:
 {% endfor %}
 {% if current_service.healthcheck is defined and current_service.healthcheck is not none %}
     healthcheck:
+{% if ':' in current_service.healthcheck.test %}
+      test: >
+        {{ current_service.healthcheck.test }}
+{% else %}
       test: {{ current_service.healthcheck.test }}
+{% endif %}
 {% if current_service.healthcheck.interval is defined and current_service.healthcheck.interval is not none %}
       interval: {{ current_service.healthcheck.interval }}
 {% endif %}
