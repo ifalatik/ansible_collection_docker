@@ -12,11 +12,11 @@
 - name: "Deploy subdirectories for {{ project_name }}"
   ansible.builtin.file:
     path: "{{ project_dir + '/' + file.path.split(project_name + '/')[1:] | join(project_name + '/') }}"
-    mode: "{{ docker_directory_mode if not \
+    mode: "{{ project_deployment_directory_mode if not \
       (project_dir + '/' + file.path.split(project_name + '/')[1:] | join(project_name + '/')) | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
-      else docker_secret_directory_mode }}"
-    owner: "{{ docker_owner }}"
-    group: "{{ docker_group }}"
+      else project_deployment_secret_directory_mode }}"
+    owner: "{{ project_deployment_owner }}"
+    group: "{{ project_deployment_group }}"
     state: "directory"
   with_list: "{{ files_subdirs.files }}"
   loop_control:

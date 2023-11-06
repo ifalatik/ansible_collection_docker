@@ -9,7 +9,7 @@
 
 - name: "Define project directory variable"
   ansible.builtin.set_fact:
-    project_dir: "{{ docker_project_base_path }}/{{ project_name }}"
+    project_dir: "{{ project_deployment_base_path }}/{{ project_name }}"
 
 - name: "Set regex secret paths variable"
   ansible.builtin.set_fact:
@@ -26,11 +26,11 @@
   ansible.builtin.file:
     path: "{{ project_dir }}"
     state: "directory"
-    mode: "{{ docker_directory_mode if not \
+    mode: "{{ project_deployment_directory_mode if not \
       project_dir | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
-      else docker_secret_directory_mode }}"
-    owner: "{{ docker_owner }}"
-    group: "{{ docker_group }}"
+      else project_deployment_secret_directory_mode }}"
+    owner: "{{ project_deployment_owner }}"
+    group: "{{ project_deployment_group }}"
 
 - name: Ensure external networks exist
   community.docker.docker_network:

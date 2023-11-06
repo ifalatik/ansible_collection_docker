@@ -6,40 +6,40 @@ This role allows you to deploy docker projects via docker compose files.
 Requirements
 ------------
 
-`docker` and `docker-compose` (or `docker compose` - adjust via `docker_compose_command` variable)
+`docker` and `docker-compose` (or `docker compose` - adjust via `project_deployment_docker_compose_command` variable)
 
 Role Variables
 --------------
 
 The default version of docker-compose files. Can be overridden on a per project basis.
 
-    docker_compose_file_version: "2"
+    project_deployment_docker_compose_file_version: "2"
 
 The command to use to start and stop the containers via docker-compose
 
-    docker_compose_command: "docker-compose"
+    project_deployment_docker_compose_command: "docker-compose"
 
 Configure where to store the project files:
 
-    docker_project_base_path: "/opt/docker_projects"
+    project_deployment_base_path: "/opt/project_deployment_projects"
 
 Configure owner and access modes:
 
-    docker_file_mode: "0664"
-    docker_directory_mode: "0775"
-    docker_secret_file_mode: "0660"
-    docker_secret_directory_mode: "0770"
+    project_deployment_file_mode: "0664"
+    project_deployment_directory_mode: "0775"
+    project_deployment_secret_file_mode: "0660"
+    project_deployment_secret_directory_mode: "0770"
 
-    docker_owner: "{{ ansible_user }}"
-    docker_group: "{{ ansible_user }}"
+    project_deployment_owner: "{{ ansible_user }}"
+    project_deployment_group: "{{ ansible_user }}"
 
 The docker projects to be deployed:
 
-    docker_projects_to_deploy: ["project1"] (leave empty to deploy all )
+    project_deployment_project_to_deploy: ["project1"] (leave empty to deploy all )
 
-    docker_projects:
+    project_deployment_projects:
       project1:
-        docker_compose_file_version: 
+        docker_compose_file_version:
         services:
           service1:
             key: value
@@ -122,7 +122,7 @@ Subdirectories will also be deployed to the host(s). e.g.:
 └─── roles
 |   | ...
 ```
-will lead to `{{ docker_project_base_path }}/project1/dir1/file1` on the host.
+will lead to `{{ project_deployment_base_path }}/project1/dir1/file1` on the host.
 
 **Currently only external networks are supported!**
 
@@ -143,7 +143,7 @@ This would require for the files `traefik.yml`, `dynamic_conf.yml` and the direc
 - hosts: all
 
   vars:
-    docker_projects:
+    project_deployment_projects:
       traefik:
         docker_compose_file_version: "2.1"
         services:

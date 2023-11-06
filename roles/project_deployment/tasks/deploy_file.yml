@@ -16,11 +16,11 @@
   ansible.builtin.copy:
     src: "{{ file.path }}"
     dest: "{{ remote_path }}"
-    mode: "{{ docker_file_mode if not \
+    mode: "{{ project_deployment_file_mode if not \
       remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
-      else docker_secret_file_mode }}"
-    owner: "{{ docker_owner }}"
-    group: "{{ docker_group }}"
+      else project_deployment_secret_file_mode }}"
+    owner: "{{ project_deployment_owner }}"
+    group: "{{ project_deployment_group }}"
   diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
   when: file_type == 'host_file' or
     ( file_type == 'file' and not ( potential_host_file.stat.exists is defined and potential_host_file.stat.exists ) )
@@ -30,11 +30,11 @@
   ansible.builtin.template:
     src: "{{ file.path }}"
     dest: "{{ remote_path }}"
-    mode: "{{ docker_file_mode if not \
+    mode: "{{ project_deployment_file_mode if not \
       remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
-      else docker_secret_file_mode }}"
-    owner: "{{ docker_owner }}"
-    group: "{{ docker_group }}"
+      else project_deployment_secret_file_mode }}"
+    owner: "{{ project_deployment_owner }}"
+    group: "{{ project_deployment_group }}"
   diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
   when: file_type == 'template' and not ( potential_host_file.stat.exists is defined and potential_host_file.stat.exists )
   notify: ["Restart project"]

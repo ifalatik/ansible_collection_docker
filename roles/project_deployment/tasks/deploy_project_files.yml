@@ -39,9 +39,9 @@
   ansible.builtin.template:
     src: "docker-compose.yml.j2"
     dest: "{{ project_dir + '/docker-compose.yml' }}"
-    mode: "{{ docker_file_mode }}"
-    owner: "{{ docker_owner }}"
-    group: "{{ docker_group }}"
+    mode: "{{ project_deployment_file_mode }}"
+    owner: "{{ project_deployment_owner }}"
+    group: "{{ project_deployment_group }}"
     lstrip_blocks: true
   notify: ["Restart project"]
 

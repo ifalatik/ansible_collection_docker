@@ -1,24 +1,24 @@
 ---
 
-docker_compose_file_version: "2"
-docker_compose_command: "docker-compose"
+project_deployment_docker_compose_file_version: "2"
+project_deployment_docker_compose_command: "docker-compose"
 
-docker_project_base_path: "/opt/docker_projects"
+project_deployment_base_path: "/opt/project_deployment_projects"
 
-docker_file_mode: "0664"
-docker_directory_mode: "0775"
-docker_secret_file_mode: "0660"
-docker_secret_directory_mode: "0770"
+project_deployment_file_mode: "0664"
+project_deployment_directory_mode: "0775"
+project_deployment_secret_file_mode: "0660"
+project_deployment_secret_directory_mode: "0770"
 
-docker_owner: "{{ ansible_user }}"
-docker_group: "{{ ansible_user }}"
+project_deployment_owner: "{{ ansible_user }}"
+project_deployment_group: "{{ ansible_user }}"
 
-docker_projects_to_deploy: []
+project_deployment_project_to_deploy: []
 # Put a list of projects that are supposed to be deployed.
 # Leave empty to deploy all
-# Make sure to also set the project information in the docker_projects variable.
+# Make sure to also set the project information in the project_deployment_projects variable.
 
-docker_projects:
+project_deployment_projects:
   # <name1>: - this will determine the directory name
   #   docker_compose_file_version:
   #   services: - multiple services in one docker-compose file
