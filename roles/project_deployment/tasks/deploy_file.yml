@@ -4,6 +4,7 @@
   ansible.builtin.stat:
     path: "{{ host_files_dir.stat.path + '/' + (file.path.split(project_name + '/')[1:] | join(project_name + '/')).split('.j2')[0] }}"
   delegate_to: "localhost"
+  become: False
   when: file_type != 'host_file' and host_files_dir.stat.isdir is defined and host_files_dir.stat.isdir
   register: potential_host_file
 

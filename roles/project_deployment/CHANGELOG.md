@@ -1,4 +1,6 @@
 # CHANGELOG
+## 1.2.4
+- don't become for localhost tasks
 
 ## 1.2.3
 - fix remote_path for files being wrong when `project_name/` was in the local path.

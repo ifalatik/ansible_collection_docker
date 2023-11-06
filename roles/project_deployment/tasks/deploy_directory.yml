@@ -6,6 +6,7 @@
     recurse: true
     file_type: "directory"
   delegate_to: "localhost"
+  become: False
   register: files_subdirs
 
 - name: "Deploy subdirectories for {{ project_name }}"
@@ -29,6 +30,7 @@
     file_type: "file"
     hidden: true
   delegate_to: "localhost"
+  become: False
   register: directory_files
 
 - name: "Deploy files or templates for {{ project_name }}"
