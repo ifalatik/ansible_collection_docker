@@ -1,3 +1,9 @@
+# v1.0.4
+
+## project_deployment
+
+- don't become for localhost tasks
+
 # v1.0.3
 
 ## project_deployment
