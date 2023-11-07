@@ -13,7 +13,7 @@ project_deployment_secret_directory_mode: "0770"
 project_deployment_owner: "{{ ansible_user }}"
 project_deployment_group: "{{ ansible_user }}"
 
-project_deployment_project_to_deploy: []
+project_deployment_projects_to_deploy: []
 # Put a list of projects that are supposed to be deployed.
 # Leave empty to deploy all
 # Make sure to also set the project information in the project_deployment_projects variable.

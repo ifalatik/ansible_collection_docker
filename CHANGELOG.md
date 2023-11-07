@@ -1,3 +1,8 @@
+# v2.0.1
+
+## project_deployment
+- rename `project_deployment_project_to_deploy` -> `project_deployment_projects_to_deploy`
+
 # v2.0.0
 
 ## project_deployment

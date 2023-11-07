@@ -35,7 +35,7 @@ Configure owner and access modes:
 
 The docker projects to be deployed:
 
-    project_deployment_project_to_deploy: ["project1"] (leave empty to deploy all )
+    project_deployment_projects_to_deploy: ["project1"] (leave empty to deploy all )
 
     project_deployment_projects:
       project1:
