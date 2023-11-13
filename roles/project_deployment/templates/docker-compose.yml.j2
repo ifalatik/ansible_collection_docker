@@ -20,14 +20,15 @@ services:
     {{ variable }}:
 {% if variable == 'depends_on' and current_service[ variable ] is mapping %}
 {% for dependency in current_service[ variable ] %}
+      {{ dependency }}:
 {% if current_service[ variable ][ dependency ][ 'restart' ] is defined %}
-      restart: {{ current_service[ variable ][ dependency ][ 'restart' ] }}
+        restart: {{ current_service[ variable ][ dependency ][ 'restart' ] }}
 {% endif %}
 {% if current_service[ variable ][ dependency ][ 'condition' ] is defined %}
-      condition: {{ current_service[ variable ][ dependency ][ 'condition' ] }}
+        condition: {{ current_service[ variable ][ dependency ][ 'condition' ] }}
 {% endif %}
 {% if current_service[ variable ][ dependency ][ 'required' ] is defined %}
-      required: {{ current_service[ variable ][ dependency ][ 'required' ] }}
+        required: {{ current_service[ variable ][ dependency ][ 'required' ] }}
 {% endif %}
 {% endfor %}
 {% else %}
