@@ -1,3 +1,8 @@
+# v2.1.0
+
+## project_deployment
+- add 'restart', 'condition' and 'required' to 'depends_on' key for services
+
 # v2.0.1
 
 ## project_deployment

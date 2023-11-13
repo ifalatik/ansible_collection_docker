@@ -18,9 +18,23 @@ services:
 {% for variable in list_vars %}
 {% if current_service[ variable ] is defined and current_service[ variable ] | length > 0 %}
     {{ variable }}:
+{% if variable == 'depends_on' and current_service[ variable ] is mapping %}
+{% for dependency in current_service[ variable ] %}
+{% if current_service[ variable ][ dependency ][ 'restart' ] is defined %}
+      restart: {{ current_service[ variable ][ dependency ][ 'restart' ] }}
+{% endif %}
+{% if current_service[ variable ][ dependency ][ 'condition' ] is defined %}
+      condition: {{ current_service[ variable ][ dependency ][ 'condition' ] }}
+{% endif %}
+{% if current_service[ variable ][ dependency ][ 'required' ] is defined %}
+      required: {{ current_service[ variable ][ dependency ][ 'required' ] }}
+{% endif %}
+{% endfor %}
+{% else %}
 {% for item_ in current_service[ variable ] %}
       - {{ item_ }}
 {% endfor %}
+{% endif %}
 {% endif %}
 {% endfor %}
 {% if current_service.healthcheck is defined and current_service.healthcheck is not none %}
