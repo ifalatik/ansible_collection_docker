@@ -1,3 +1,8 @@
+# v2.2.0
+
+## project_deployment
+- becoming super user is no longer required for the entire role, instead select tasks become where necessary
+
 # v2.1.1
 
 ## project_deployment
