@@ -44,11 +44,13 @@
     group: "{{ project_deployment_group }}"
     lstrip_blocks: true
   notify: ["Restart project"]
+  become: true
 
 - name: "Ensure docker-compose.yaml doesn't exists for {{ project_name }}"
   ansible.builtin.file:
     path: "{{ project_dir + '/docker-compose.yaml' }}"
     state: "absent"
+  become: true
 
 - name: "Deploy host-specific files for {{ project_name }}"
   ansible.builtin.include_tasks: "deploy_directory.yml"

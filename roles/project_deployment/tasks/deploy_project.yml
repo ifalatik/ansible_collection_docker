@@ -31,6 +31,7 @@
       else project_deployment_secret_directory_mode }}"
     owner: "{{ project_deployment_owner }}"
     group: "{{ project_deployment_group }}"
+  become: true
 
 - name: Ensure external networks exist
   community.docker.docker_network:

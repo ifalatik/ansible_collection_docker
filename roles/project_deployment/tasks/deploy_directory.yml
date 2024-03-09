@@ -22,6 +22,7 @@
   loop_control:
     loop_var: file
   notify: ["Restart project"]
+  become: true
 
 - name: "Collect all files in directory"
   ansible.builtin.find:

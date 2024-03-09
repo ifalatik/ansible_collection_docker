@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.3.0
+- becoming super user is no longer required for the entire role, instead select tasks become where necessary
+
 ## 1.2.3
 - fix remote_path for files being wrong when `project_name/` was in the local path.
 
