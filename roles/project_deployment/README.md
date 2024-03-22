@@ -137,7 +137,7 @@ Example Playbook
 ----------------
 Example deployment of [traefik](https://github.com/traefik/traefik-library-image).
 
-This would require for the files `traefik.yml`, `dynamic_conf.yml` and the directory `certs`, including a certificate for SSL to exists under this playbook's base directory + `/docker-project-deployment/` + (`files/traefik/` || `templates/traefik/` || `host_files/{{ inventory_hostname }}/traefik/`).
+This would require for the files `traefik.yml`, `dynamic/dynamic_conf.yml` and the directory `certs`, including a certificate for SSL to exists under this playbook's base directory + `/docker-project-deployment/` + (`files/traefik/` || `templates/traefik/` || `host_files/{{ inventory_hostname }}/traefik/`).
 
 ```yaml
 - hosts: all
@@ -145,7 +145,7 @@ This would require for the files `traefik.yml`, `dynamic_conf.yml` and the direc
   vars:
     project_deployment_projects:
       traefik:
-        docker_compose_file_version: "2.1"
+        docker_compose_file_version: "3"
         services:
           docker-proxy:
             image: "tecnativa/docker-socket-proxy"
@@ -171,7 +171,7 @@ This would require for the files `traefik.yml`, `dynamic_conf.yml` and the direc
               - "/etc/timezone:/etc/timezone"
               - "/etc/localtime:/etc/localtime"
               - "./traefik.yml:/etc/traefik/traefik.yml"
-              - "./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml"
+              - "./dynamic/:/etc/traefik/dynamic/"
               - "./certs:/certs:ro"
             labels:
               - "traefik.enable=true"
@@ -191,6 +191,8 @@ This would require for the files `traefik.yml`, `dynamic_conf.yml` and the direc
         external_networks: ["traefik", "docker-proxy"]
         regex_secret_remote_paths:
           - '.*/certs.*'
+        # don't restart service when dynamic configuration changes
+        regex_ignore_changes_remote_paths: ['.*/dynamic_conf\.yml$']
 
   roles:
       - docker_project_deployment

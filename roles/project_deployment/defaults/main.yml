@@ -81,6 +81,9 @@ project_deployment_projects:
   #   regex_secret_remote_paths: - any path to file or directory on remote matching one of these regexes will be pushed with their respective 'secret_mode'
   #     - <regex>
   #     - ...
+  #   regex_ignore_changes_remote_paths: - any path to file or directory on remote matching one of these regexes will not lead to the container being restarted
+  #     - <regex>
+  #     - ...
   # <name2>:
   #   ...
 

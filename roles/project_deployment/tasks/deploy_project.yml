@@ -17,6 +17,11 @@
       if project.value.regex_secret_remote_paths is defined else ['.*/\\..*'] }}"
     # treats everything starting with a '.' as secret
 
+- name: "Set regex ignore changes paths variable"
+  ansible.builtin.set_fact:
+    regex_ignore_changes_remote_paths: "{{ project.value.regex_ignore_changes_remote_paths \
+      if project.value.regex_ignore_changes_remote_paths is defined else [] }}"
+
 - name: "Stop Playbook if no service in project"
   ansible.builtin.fail:
     msg: "No services to be deployed for project: {{ project_name }}"

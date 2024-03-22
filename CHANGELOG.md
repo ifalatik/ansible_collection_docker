@@ -1,3 +1,9 @@
+# v2.3.0
+
+## project_deployment
+- add key `regex_ignore_changes_remote_paths` to projects, which allows the user to select certain files, for which the docker project shouldn't be restarted if they change.
+- add example for `regex_ignore_changes_remote_paths` in README
+
 # v2.2.0
 
 ## project_deployment
