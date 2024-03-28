@@ -51,7 +51,7 @@
     that: true
     quiet: true
   changed_when: true
-  when: compose_copy_result.changed not ((project_dir + '/docker-compose.yml') | ifalatik.docker.any_regex_matches(regex_ignore_changes_remote_paths))
+  when: compose_copy_result.changed and not ((project_dir + '/docker-compose.yml') | ifalatik.docker.any_regex_matches(regex_ignore_changes_remote_paths))
   notify: ["Restart project"]
 
 - name: "Ensure docker-compose.yaml doesn't exists for {{ project_name }}"
