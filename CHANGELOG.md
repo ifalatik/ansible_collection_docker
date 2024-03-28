@@ -1,3 +1,9 @@
+# v2.3.1
+
+## project_deployment
+- allow `regex_ignore_changes_remote_paths` to ignore changes in docker-compose.yml
+- add `memswap_limit` support
+
 # v2.3.0
 
 ## project_deployment
