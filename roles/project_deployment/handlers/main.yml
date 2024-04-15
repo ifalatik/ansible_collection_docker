@@ -6,5 +6,7 @@
     && {{ project_deployment_docker_compose_command }} -f {{ project_deployment_base_path }}/{{ project_name }}/docker-compose.yml up -d
   register: output
   changed_when: true
+  become_user: "{{ project_deployment_docker_user }}"
+  become: true
 
 ...

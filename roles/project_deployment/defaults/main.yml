@@ -12,6 +12,8 @@ project_deployment_secret_directory_mode: "0770"
 
 project_deployment_owner: "{{ ansible_user }}"
 project_deployment_group: "{{ ansible_user }}"
+# User that restarts the services
+project_deployment_docker_user: "{{ ansible_user }}"
 
 project_deployment_projects_to_deploy: []
 # Put a list of projects that are supposed to be deployed.

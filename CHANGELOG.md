@@ -1,3 +1,8 @@
+# v2.3.2
+
+## project_deployment
+- add `project_deployment_docker_user` variable, which allows restarting the projects as a different user than `{{ ansible_user }}`/`root`
+
 # v2.3.1
 
 ## project_deployment
