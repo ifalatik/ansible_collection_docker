@@ -1,3 +1,8 @@
+# v2.3.3
+
+## project_deployment
+- add `--remove-orphans` parameter to container restarting process to allow for container name changes
+
 # v2.3.2
 
 ## project_deployment
