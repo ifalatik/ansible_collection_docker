@@ -1,11 +1,19 @@
 ---
 
-- name: "Restart project"
-  ansible.builtin.shell: |
-    {{ project_deployment_docker_compose_command }} -f {{ project_deployment_base_path }}/{{ project_name }}/docker-compose.yml down --remove-orphans \
-    && {{ project_deployment_docker_compose_command }} -f {{ project_deployment_base_path }}/{{ project_name }}/docker-compose.yml up -d
+- name: "Stop project"
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_deployment_base_path }}/{{ project_name }}"
+    remove_orphans: true
+    state: absent
   register: output
-  changed_when: true
+  become_user: "{{ project_deployment_docker_user }}"
+  become: true
+
+- name: "Start project"
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_deployment_base_path }}/{{ project_name }}"
+    state: present
+  register: output
   become_user: "{{ project_deployment_docker_user }}"
   become: true
 

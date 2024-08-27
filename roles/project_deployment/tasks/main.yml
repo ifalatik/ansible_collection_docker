@@ -1,5 +1,19 @@
 ---
 
+- name: Ensure correct python requirements are installed on hosts
+  when: project_deployment_install_python_requirements
+  become_user: "{{ project_deployment_docker_user }}"
+  become: true
+  block:
+    - name: Uninstall docker-py
+      ansible.builtin.pip:
+        name: "docker-py"
+        state: absent
+    - name: Install python requirements
+      ansible.builtin.pip:
+        name: "docker"
+        state: present
+
 # This loops over all projects defined in the project_deployment_projects variable.
 # Every project is handed to the deploy_project tasks-file,
 # which deploys, updates and, if necessary, restarts the project

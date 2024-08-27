@@ -1,3 +1,11 @@
+# v2.3.4
+
+## project_deployment
+- remove `version` key from docker-compose.yml unless explicitely stated via `project_deployment_docker_compose_file_version` or `<project>.docker_compose_file_version`
+- allow using docker-compose.yml host-files without deploying the template
+- add `project_deployment_install_python_requirements` (default `true`) which will control whether to install the [Docker SDK for Python](https://pypi.org/project/docker/) and uninstall `docker-py` if installed.
+- switch to using the `community.docker.docker_compose_v2` module for stopping and starting projects
+
 # v2.3.3
 
 ## project_deployment

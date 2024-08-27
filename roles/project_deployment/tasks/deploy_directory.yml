@@ -21,7 +21,7 @@
   with_list: "{{ files_subdirs.files }}"
   loop_control:
     loop_var: file
-  notify: ["Restart project"]
+  notify: ["Stop project", "Start project"]
   become: true
 
 - name: "Collect all files in directory"

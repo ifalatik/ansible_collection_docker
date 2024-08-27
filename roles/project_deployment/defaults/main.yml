@@ -1,6 +1,7 @@
 ---
 
-project_deployment_docker_compose_file_version: "2"
+project_deployment_install_python_requirements: true
+
 project_deployment_docker_compose_command: "docker-compose"
 
 project_deployment_base_path: "/opt/project_deployment_projects"

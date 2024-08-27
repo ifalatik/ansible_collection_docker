@@ -35,24 +35,34 @@
     file_type: 'template'
   when: templates_dir.stat.isdir is defined and templates_dir.stat.isdir
 
-- name: "Build and copy docker-compose.yml for {{ project_name }}"
-  ansible.builtin.template:
-    src: "docker-compose.yml.j2"
-    dest: "{{ project_dir + '/docker-compose.yml' }}"
-    mode: "{{ project_deployment_file_mode }}"
-    owner: "{{ project_deployment_owner }}"
-    group: "{{ project_deployment_group }}"
-    lstrip_blocks: true
-  register: compose_copy_result
-  become: true
+- name: "Get docker-compose.yml host-file for {{ project_name }}"
+  ansible.builtin.stat:
+    path: "{{ playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_name + '/docker-compose.yml' }}"
+  delegate_to: "localhost"
+  become: false
+  register: host_compose_file
 
-- name: "Notify restart handler if changes occured and file requires a restart"
-  ansible.builtin.assert:  # workaround to do nothing but still notify a handler
-    that: true
-    quiet: true
-  changed_when: true
-  when: compose_copy_result.changed and not ((project_dir + '/docker-compose.yml') | ifalatik.docker.any_regex_matches(regex_ignore_changes_remote_paths))
-  notify: ["Restart project"]
+- name: Copy docker-compose.yml template block
+  when: not host_compose_file.stat.exists
+  block:
+    - name: "Build and copy docker-compose.yml for {{ project_name }}"
+      ansible.builtin.template:
+        src: "docker-compose.yml.j2"
+        dest: "{{ project_dir + '/docker-compose.yml' }}"
+        mode: "{{ project_deployment_file_mode }}"
+        owner: "{{ project_deployment_owner }}"
+        group: "{{ project_deployment_group }}"
+        lstrip_blocks: true
+      register: compose_copy_result
+      become: true
+
+    - name: "Notify restart handler if changes occured and file requires a restart"
+      ansible.builtin.assert:  # workaround to do nothing but still notify a handler
+        that: true
+        quiet: true
+      changed_when: true
+      when: compose_copy_result.changed and not ((project_dir + '/docker-compose.yml') | ifalatik.docker.any_regex_matches(regex_ignore_changes_remote_paths))
+      notify: ["Stop project", "Start project"]
 
 - name: "Ensure docker-compose.yaml doesn't exists for {{ project_name }}"
   ansible.builtin.file:

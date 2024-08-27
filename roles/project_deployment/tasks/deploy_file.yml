@@ -47,6 +47,6 @@
     quiet: true
   changed_when: true
   when: (copy_result.changed or template_result.changed) and not (remote_path | ifalatik.docker.any_regex_matches(regex_ignore_changes_remote_paths))
-  notify: ["Restart project"]
+  notify: ["Stop project", "Start project"]
 
 ...

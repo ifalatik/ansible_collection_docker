@@ -1,7 +1,10 @@
-Role Name
+Project Deployment
 =========
 
 This role allows you to deploy docker projects via docker compose files.
+
+It also installs the [Docker SDK for Python](https://pypi.org/project/docker/) and uninstalls `docker-py` if installed.
+You can disable this behavior by setting `project_deployment_install_python_requirements: false`.
 
 Requirements
 ------------
