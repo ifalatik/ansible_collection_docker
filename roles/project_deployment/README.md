@@ -200,9 +200,3 @@ This would require for the files `traefik.yml`, `dynamic/dynamic_conf.yml` and t
   roles:
       - docker_project_deployment
 ```
-
-License
--------
-
-MIT
-
