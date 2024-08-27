@@ -1,8 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
+
 
 class FilterModule:
     def filters(self):
-        return {'non_local_paths': self.non_local_paths}
+        return {"non_local_paths": self.non_local_paths}
 
     def non_local_paths(self, paths):
         """
@@ -10,7 +11,7 @@ class FilterModule:
         """
         correct_paths = []
         for path in paths:
-            if path.startswith('.') or path.startswith('/'):
+            if path.startswith(".") or path.startswith("/"):
                 continue
-            correct_paths.append(path.split(':')[0])
+            correct_paths.append(path.split(":")[0])
         return correct_paths

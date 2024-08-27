@@ -1,5 +1,4 @@
-#!/bin/bash
-set -e
+#!/bin/bash -eu
 
 # Start Docker daemon in the background
 /usr/bin/dockerd &

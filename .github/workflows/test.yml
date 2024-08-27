@@ -10,12 +10,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
-  workflow_call:
-    inputs:
-      matrix_exclude:
-        default: '[]'
-        required: false
-        type: string
 jobs:
   ansible-lint:
     uses: ./.github/workflows/ansible-lint.yml
@@ -31,10 +25,9 @@ jobs:
         python-version:
           - "3.11"
           - "3.12"
-        exclude: ${{ fromJSON(inputs.matrix_exclude) }}
   sanity:
     uses: ansible-network/github_actions/.github/workflows/sanity.yml@main
-  
+
   all_green:
     if: ${{ always() && (github.event_name != 'schedule') }}
     needs:
