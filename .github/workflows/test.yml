@@ -89,14 +89,22 @@ jobs:
         run: systemctl status docker || sudo service docker status
 
 
-      - name: Run integration tests
+      # - name: Run integration tests
+      #   run: >-
+      #     python -m pytest tests/integration
+      #     ${{ inputs.pytest_addopts }}
+      #   env:
+      #     ANSIBLE_FORCE_COLOR: "1"
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      #   working-directory: ${{ steps.identify.outputs.collection_path }}
+
+      - name: Run integration tests using molecule
         run: >-
-          python -m pytest tests/integration
-          ${{ inputs.pytest_addopts }}
+          molecule test
         env:
           ANSIBLE_FORCE_COLOR: "1"
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        working-directory: ${{ steps.identify.outputs.collection_path }}
+        working-directory: "${{ steps.identify.outputs.collection_path }}/extensions"
 
       - name: Upload logs
         if: always()
