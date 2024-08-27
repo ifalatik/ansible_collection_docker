@@ -16,16 +16,6 @@ on:
         default: tests/integration/targets
         required: false
         type: string
-      matrix_exclude:
-        default: >-
-          [
-            {
-              "ansible-version": "stable-2.15",
-              "python-version": "3.12"
-            }
-          ]
-        required: false
-        type: string
       pytest_addopts:
         default: ""
         required: false
@@ -50,7 +40,9 @@ jobs:
           - "3.10"
           - "3.11"
           - "3.12"
-        exclude: ${{ fromJSON(inputs.matrix_exclude) }}
+        exclude:
+          - ansible-version: stable-2.15
+            python-version: "3.12"
 
     name: "py${{ matrix.python-version }} / ${{ matrix.ansible-version }}"
     steps:
