@@ -1,0 +1,59 @@
+---
+
+driver:
+  name: docker
+
+platforms:
+  - name: ubuntu
+    dockerfile: ubuntu/Dockerfile.j2
+    image: ubuntu:20.04
+    pre_build_image: false
+    privileged: true
+
+scenario:
+  name: default
+  # removed all not required entries
+  create_sequence:
+    # - dependency
+    - create
+    # - prepare
+  check_sequence:
+    # - dependency
+    # - cleanup
+    - destroy
+    - create
+    # - prepare
+    - converge
+    - check
+    - destroy
+  converge_sequence:
+    # - dependency
+    - create
+    # - prepare
+    - converge
+  destroy_sequence:
+    # - dependency
+    # - cleanup
+    - destroy
+  test_sequence:
+    # - dependency
+    # - cleanup
+    - destroy
+    - syntax
+    - create
+    # - prepare
+    - converge
+    - idempotence
+    # - side_effect
+    - verify
+    # - cleanup
+    - destroy
+
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        project_deployment_docker_compose_command: "docker compose"
+        ansible_remote_tmp: /tmp/.ansible/tmp
+        ansible_user: ansible

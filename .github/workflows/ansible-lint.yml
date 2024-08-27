@@ -1,0 +1,13 @@
+name: ansible-lint
+on:
+  workflow_call:
+jobs:
+  build:
+    name: Ansible Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependecies (collections)
+        run: ansible-galaxy collection install -r collections/requirements.yml
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@main

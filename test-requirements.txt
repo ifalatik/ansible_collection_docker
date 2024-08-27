@@ -1,0 +1,4 @@
+pytest-xdist
+pytest-ansible
+molecule
+molecule-plugins[docker]

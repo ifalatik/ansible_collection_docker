@@ -1,0 +1,52 @@
+FROM {{ item.image }}
+
+# Set non-interactive frontend for apt-get to avoid prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install required packages
+RUN apt-get update && \
+    apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common \
+    sudo \
+    sshpass \
+    python3-pip \
+    python3-apt && \
+    apt-get clean
+
+# Install Docker
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+    apt-get update && \
+    apt-get install -y docker-ce docker-ce-cli containerd.io && \
+    apt-get clean
+
+# Create Ansible user and allow passwordless sudo
+RUN useradd -m -s /bin/bash ansible && \
+    echo "ansible ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/ansible && \
+    chmod 0440 /etc/sudoers.d/ansible
+
+# Add Ansible user to Docker group
+RUN usermod -aG docker ansible
+
+# Set up SSH for Ansible
+RUN mkdir /home/ansible/.ssh && \
+    chmod 700 /home/ansible/.ssh && \
+    chown -R ansible:ansible /home/ansible/.ssh
+
+# Install Ansible
+RUN pip3 install ansible
+
+# Ensure Docker works
+RUN docker --version
+
+WORKDIR /home/ansible
+
+COPY ubuntu/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["/lib/systemd/systemd"]

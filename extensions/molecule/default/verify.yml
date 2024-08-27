@@ -1,0 +1,46 @@
+---
+
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Assert container is running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/single/nginx"
+        services:
+          - "nginx_single"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
+
+    - name: Assert containers are running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/multiple/nginx"
+        services:
+          - "nginx1"
+          - "nginx2"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
+    - name: Assert containers are running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/multiple/redis"
+        services:
+          - "redis"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
+
+    - name: Get content of docker-compose.yml for redis
+      ansible.builtin.slurp:
+        src: "/opt/multiple/redis/docker-compose.yml"
+      register: redis_compose
+    - name: Assert container_name is 'redis-custom' for redis
+      ansible.builtin.assert:
+        that:
+          - "'redis-custom' == (redis_compose.content | b64decode | from_yaml).services.redis.container_name"
