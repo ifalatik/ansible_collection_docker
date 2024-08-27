@@ -33,16 +33,16 @@ jobs:
       fail-fast: false
       matrix:
         ansible-version:
-        #  - stable-2.15
-        #  - stable-2.16
+          - stable-2.15
+          - stable-2.16
           - stable-2.17
         python-version:
-        #  - "3.10"
-        #  - "3.11"
+          - "3.10"
+          - "3.11"
           - "3.12"
-        # exclude:
-        #   - ansible-version: stable-2.15
-        #     python-version: "3.12"
+        exclude:
+          - ansible-version: stable-2.15
+            python-version: "3.12"
 
     name: "py${{ matrix.python-version }} / ${{ matrix.ansible-version }}"
     steps:
@@ -85,26 +85,23 @@ jobs:
       - name: Print the python dependencies
         run: python3 -m pip list
 
-      - name: Check Docker status
-        run: systemctl status docker || sudo service docker status
 
-
-      # - name: Run integration tests
-      #   run: >-
-      #     python -m pytest tests/integration
-      #     ${{ inputs.pytest_addopts }}
-      #   env:
-      #     ANSIBLE_FORCE_COLOR: "1"
-      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      #   working-directory: ${{ steps.identify.outputs.collection_path }}
-
-      - name: Run integration tests using molecule
+      - name: Run integration tests
         run: >-
-          molecule --debug test
+          python -m pytest tests/integration
+          ${{ inputs.pytest_addopts }}
         env:
           ANSIBLE_FORCE_COLOR: "1"
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        working-directory: "${{ steps.identify.outputs.collection_path }}/extensions"
+        working-directory: ${{ steps.identify.outputs.collection_path }}
+
+      # uncomment for more verbose output
+      # comment out the above step
+      # - name: Run integration tests using molecule
+      #   run: >-
+      #     molecule --debug test
+      #   env:
+      #     ANSIBLE_FORCE_COLOR: "1"
+      #   working-directory: "${{ steps.identify.outputs.collection_path }}/extensions"
 
       - name: Upload logs
         if: always()
