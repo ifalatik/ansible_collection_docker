@@ -61,7 +61,7 @@ services:
       start_period: {{ current_service.healthcheck.start_period }}
 {% endif %}
 {% endif %}
-{% if current_service.logging is defined %}
+{% if current_service.logging is defined and current_service.logging is not none %}
     logging:
       driver: {{ current_service.logging.driver }}
 {% if current_service.logging.options is defined and current_service.logging.options is not none %}
