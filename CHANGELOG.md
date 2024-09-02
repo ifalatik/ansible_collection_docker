@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v2.3.5
+
+### project_deployment
+- add check whether `logging` is set to `none` for a service (thanks to @serknsvnc)
+    - if so, don't write `logging` key to docker-compose.yml for that service
+    - previously this would crash with `ansible.errors.AnsibleUndefinedVariable: 'None' has no attribute 'driver'. 'None' has no attribute 'driver'`
+
 ## v2.3.4
 
 ### project_deployment
