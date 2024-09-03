@@ -5,6 +5,10 @@
   become_user: "{{ project_deployment_docker_user }}"
   become: true
   block:
+    - name: Install pip
+      ansible.builtin.package:
+        name: "python3-pip"
+        state: present
     - name: Uninstall docker-py
       ansible.builtin.pip:
         name: "docker-py"

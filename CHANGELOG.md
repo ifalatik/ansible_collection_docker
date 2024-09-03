@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v2.3.6
+
+### project_deployment
+- Ensure python3-pip is installed when `project_deployment_install_python_requirements` is `true`
+
 ## v2.3.5
 
 ### project_deployment
