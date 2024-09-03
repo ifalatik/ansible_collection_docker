@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v2.3.7
+
+### project_deployment
+- ensure role doesn't crash in check mode if python3-pip isn't installed
+
 ## v2.3.6
 
 ### project_deployment

@@ -13,10 +13,12 @@
       ansible.builtin.pip:
         name: "docker-py"
         state: absent
+      ignore_errors: "{{ ansible_check_mode }}"
     - name: Install python requirements
       ansible.builtin.pip:
         name: "docker"
         state: present
+      ignore_errors: "{{ ansible_check_mode }}"
 
 # This loops over all projects defined in the project_deployment_projects variable.
 # Every project is handed to the deploy_project tasks-file,
