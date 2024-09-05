@@ -72,12 +72,14 @@ services:
 {% endif %}
 {% endif %}
 {% endfor %}
-{% if current_project.value.external_networks is defined and current_project.value.external_networks | length > 0 %}
+{% if current_project.value.networks is defined and current_project.value.networks | length > 0 %}
 
 networks:
-{% for external_network in current_project.value.external_networks %}
-  {{ external_network }}:
+{% for network in current_project.value.networks %}
+  {{ network }}:
+{% if current_project.value.external_networks is defined and current_project.value.external_networks | length > 0 and network in current_project.value.external_networks %}
     external: true
+{% endif %}
 {% endfor %}
 {% endif %}
 {% if docker_volumes is defined and docker_volumes | length > 0 %}
