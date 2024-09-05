@@ -42,11 +42,15 @@
   community.docker.docker_network:
     name: "{{ network }}"
     state: present
-  with_list: "{{ project.value.external_networks }}"
+  with_list: "{{ project.value.networks
+    | dict2items
+    | selectattr('value.external', 'defined')
+    | selectattr('value.external', 'equalto', true)
+    | map(attribute='key')
+    | list }}"
   loop_control:
     loop_var: network
   register: "docker_network_out"
-  when: "not ansible_check_mode and project.value.external_networks is defined"
 
 - name: Clear collected docker-volumes
   ansible.builtin.set_fact:

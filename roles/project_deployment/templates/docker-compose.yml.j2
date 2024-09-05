@@ -1,10 +1,11 @@
-{% set single_value_vars = ['image', 'platform', 'container_name', 'privileged', 'init', 'command', 'mem_limit',
+{% set service_single_value_vars = ['image', 'platform', 'container_name', 'privileged', 'init', 'command', 'mem_limit',
                             'memswap_limit', 'network_mode', 'entrypoint', 'stop_grace_period', 'stop_signal', 'runtime',
                             'scale', 'restart']
                             %}
-{% set list_vars = ['networks', 'depends_on', 'dns', 'dns_opt', 'dns_search', 'environment', 'env_file', 'expose',
+{% set service_list_vars = ['networks', 'depends_on', 'dns', 'dns_opt', 'dns_search', 'environment', 'env_file', 'expose',
                     'extra_hosts', 'ports', 'devices', 'labels', 'volumes', 'sysctls']
                     %}
+{% set network_single_value_vars = ['driver', 'attachable', 'enable_ipv6', 'external', 'internal', 'name'] %}
 {% if current_project.value.docker_compose_file_version is defined or project_deployment_docker_compose_file_version is defined %}
 version: '{{ current_project.value.docker_compose_file_version if current_project.value.docker_compose_file_version is defined and current_project.value.docker_compose_file_version is not none else project_deployment_docker_compose_file_version }}'
 {% endif %}
@@ -12,12 +13,12 @@ version: '{{ current_project.value.docker_compose_file_version if current_projec
 services:
 {% for name, current_service in current_project.value.services.items() %}
   {{ name }}:
-{% for variable in single_value_vars %}
+{% for variable in service_single_value_vars %}
 {% if current_service[ variable ] is defined and current_service[ variable ] is not none %}
     {{ variable }}: {{ current_service[ variable ] }}
 {% endif %}
 {% endfor %}
-{% for variable in list_vars %}
+{% for variable in service_list_vars %}
 {% if current_service[ variable ] is defined and current_service[ variable ] | length > 0 %}
     {{ variable }}:
 {% if variable == 'depends_on' and current_service[ variable ] is mapping %}
@@ -72,18 +73,65 @@ services:
 {% endif %}
 {% endif %}
 {% endfor %}
-{% if current_project.value.external_networks is defined and current_project.value.external_networks | length > 0 %}
+{% if current_project.value.networks is defined and current_project.value.networks is not none %}
 
 networks:
-{% for external_network in current_project.value.external_networks %}
-  {{ external_network }}:
-    external: true
+{% for network in current_project.value.networks %}
+  {{ network }}:
+
+{% for variable in network_single_value_vars %}
+{% if current_project.value.networks[ variable ] is defined and current_project.value.networks[ variable ] is not none %}
+    {{ variable }}: {{ current_project.value.networks[ variable ] }}
+{% endif %}
+{% endfor %}
+{% if current_project.value.networks[ 'driver_opts' ] is defined and current_project.value.networks[ 'driver_opts' ] is not none %}
+    driver_opts:
+{% for key, value in current_project.value.networks[ 'driver_opts' ].items() %}
+      {{ key }}: {{ value }}
+{% endfor %}
+{% endif %}
+{% if current_project.value.networks[ 'ipam' ] is defined and current_project.value.networks[ 'ipam' ] is not none %}
+    ipam:
+{% if current_project.value.networks[ 'ipam' ]['driver'] is defined and current_project.value.networks[ 'ipam' ]['driver'] is not none %}
+      driver: {{ current_project.value.networks[ 'ipam' ]['driver'] }}
+{% endif %}
+{% if current_project.value.networks[ 'ipam' ]['config'] is defined and current_project.value.networks[ 'ipam' ]['config'] | length > 0 %}
+      config:
+{% for ipam_config_item in current_project.value.networks[ 'ipam' ]['config'] %}
+        - subnet: {{ ipam_config_item.subnet }}
+{% if ipam_config_item.ip_range is defined and ipam_config_item.ip_range is not none %}
+          ip_range: {{ ipam_config_item.ip_range }}
+{% endif %}
+{% if ipam_config_item.gateway is defined and ipam_config_item.gateway is not none %}
+          gateway: {{ ipam_config_item.gateway }}
+{% endif %}
+{% if ipam_config_item.aux_addresses is defined and ipam_config_item.aux_addresses is not none %}
+          aux_addresses:
+{% for key, value in ipam_config_item.aux_addresses.items() %}
+            {{ key }}: {{ value }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if current_project.value.networks[ 'labels' ] is defined %}
+{% if current_project.value.networks[ 'labels' ] is mapping %}
+    labels:
+{% for key, value in current_project.value.networks[ 'labels' ].items() %}
+      {{ key }}: {{ value }}
+{% endfor %}
+{% endif %}
+{% if current_project.value.networks[ 'labels' ] | length > 0 %}
+    labels:
+{% for network_label in current_project.value.networks[ 'labels' ] %}
+      - {{ network_label }}
+{% endfor %}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% if docker_volumes is defined and docker_volumes | length > 0 %}
 
 volumes:
-{%  for docker_volume in docker_volumes %}
+{% for docker_volume in docker_volumes %}
   {{ docker_volume }}:
 {% endfor %}
 {% endif %}
