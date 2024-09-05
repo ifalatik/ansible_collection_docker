@@ -1,0 +1,28 @@
+{
+    "name": "Ansible Docker Collection Devcontainer",
+    "image": "mcr.microsoft.com/devcontainers/base:bullseye",
+    "features": {
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.12",
+            "installTools": false
+        },
+        // required for running the molecule tests
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "EditorConfig.EditorConfig",
+                "redhat.ansible",
+                "ms-python.python",
+                "ms-python.debugpy"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "ansible.python.interpreterPath": "/usr/local/python/current/bin/python",
+                "python.defaultInterpreterPath": "/usr/local/python/current/bin/python"
+            }
+        }
+    },
+    "postCreateCommand": "pip install -r ./.devcontainer/requirements.txt -r requirements.txt -r test-requirements.txt"
+}
