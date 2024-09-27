@@ -34,7 +34,7 @@
       vars:
         project_deployment_base_path: "/opt/multiple/"
         project_deployment_projects:
-          - nginx:
+          - nginx_mutliple:
               services:
                 nginx1:
                   image: "nginx:alpine"
@@ -69,11 +69,11 @@
       vars:
         project_deployment_base_path: "/opt/networking"
         project_deployment_projects:
-          - nginx:
+          - nginx_networking:
               services:
-                nginx:
+                nginx_networking:
                   image: "nginx:alpine"
-                  container_name: "nginx1"
+                  container_name: "nginx_networking"
                   healthcheck:
                     test: "curl --fail http://localhost:80 || exit 1"
                     interval: "10s"
@@ -93,7 +93,7 @@
                   ipam:
                     driver: default
                     config:
-                      - subnet: 172.28.0.0/16
+                      - subnet: 172.28.0.0/21
                         ip_range: 172.28.5.0/24
                         gateway: 172.28.5.254
                         aux_addresses:

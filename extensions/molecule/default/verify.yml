@@ -1,13 +1,13 @@
 ---
 
-- name: Converge
+- name: Verify
   hosts: all
   tasks:
     - name: Assert container is running and healthy
       community.docker.docker_compose_v2:
         project_src: "/opt/single/nginx"
         services:
-          - "nginx_single"
+          - "nginx"
         state: "present"
         wait: true
         wait_timeout: 35
@@ -44,3 +44,54 @@
       ansible.builtin.assert:
         that:
           - "'redis-custom' == (redis_compose.content | b64decode | from_yaml).services.redis.container_name"
+
+    - name: Assert containers are running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/networking/nginx"
+        services:
+          - "nginx_networking"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
+
+    - name: Assert network net1 exists correctly
+      community.docker.docker_network:
+        name: "net1"
+        state: "present"
+        driver: bridge
+        driver_options:
+          com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+        attachable: false
+        enable_ipv6: false
+        ipam_config:
+          - subnet: 172.28.0.0/21
+            iprange: 172.28.5.0/24
+            gateway: 172.28.5.254
+            aux_addresses:
+              host1: 172.28.1.5
+              host2: 172.28.1.6
+              host3: 172.28.1.7
+        ipam_driver: default
+        ipam_driver_options:
+          foo: bar
+          baz: "0"
+        internal: true
+        labels:
+          com.dict_label.description: "Financial transaction network"
+          com.dict_label.department: "Finance"
+          com.dict_label.label-with-empty-value: ""
+      register: result
+      failed_when: result.changed
+
+    - name: Assert network net2 exists correctly
+      community.docker.docker_network:
+        name: "net2"
+        state: "present"
+        labels:
+          com.list_label.description: "Financial transaction network"
+          com.list_label.department: "Finance"
+          com.list_label.label-with-empty-value: ""
+      register: result
+      failed_when: result.changed
