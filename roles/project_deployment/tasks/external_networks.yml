@@ -36,7 +36,7 @@
 - name: Rename ipam.config.ip_range to ipam.config.iprange
   ansible.builtin.set_fact:
     ipam_config: "{{ ipam_config | default([])
-      + [item | combine({'iprange': item.ip_range}) ]
+      + [item | combine({'iprange': item.ip_range})]
       | ansible.utils.remove_keys(target=['ip_range']) }}"
   with_list: "{{ current_network.value.ipam.config }}"
   when: current_network.value.ipam.config is defined

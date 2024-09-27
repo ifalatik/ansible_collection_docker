@@ -3,7 +3,8 @@
 - name: Assert no project has `external_networks` defined
   ansible.builtin.assert:
     that: "project.value.external_networks is not defined"
-    fail_msg: "The `external_networks` key is deprecated. Please use the `networks` key with the `external` key set to `true`, just like you would usually do in docker-compose files."
+    fail_msg: "The `external_networks` key is deprecated.
+      Please use the `networks` key with the `external` key set to `true`, just like you would usually do in docker-compose files."
     quiet: true
   with_dict: "{{ project_deployment_projects }}"
   loop_control:
