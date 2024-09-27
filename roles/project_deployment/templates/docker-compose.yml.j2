@@ -113,6 +113,7 @@ networks:
 {% endif %}
 {% endfor %}
 {% endif %}
+{% endif %}
 {% if current_project.value.networks[ 'labels' ] is defined %}
 {% if current_project.value.networks[ 'labels' ] is mapping %}
     labels:
@@ -125,6 +126,7 @@ networks:
 {% for network_label in current_project.value.networks[ 'labels' ] %}
       - {{ network_label }}
 {% endfor %}
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
