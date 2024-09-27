@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## tbd
+## v3.0.0
 
 ### project_deployment
 
