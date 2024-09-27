@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v3.0.3
+
+### project_deployment
+- Fix docker-compose file generation when `roject_deployment_projects.<project>.networks` is defined.
+
 ## v3.0.2
 
 ### project_deployment

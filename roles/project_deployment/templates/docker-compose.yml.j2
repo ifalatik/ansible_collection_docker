@@ -76,28 +76,27 @@ services:
 {% if current_project.value.networks is defined and current_project.value.networks is not none %}
 
 networks:
-{% for network in current_project.value.networks %}
-  {{ network }}:
-
+{% for name, network in current_project.value.networks.items() %}
+  {{ name }}:
 {% for variable in network_single_value_vars %}
-{% if current_project.value.networks[ variable ] is defined and current_project.value.networks[ variable ] is not none %}
-    {{ variable }}: {{ current_project.value.networks[ variable ] }}
+{% if network[ variable ] is defined and network[ variable ] is not none %}
+    {{ variable }}: {{ network[ variable ] }}
 {% endif %}
 {% endfor %}
-{% if current_project.value.networks[ 'driver_opts' ] is defined and current_project.value.networks[ 'driver_opts' ] is not none %}
+{% if network[ 'driver_opts' ] is defined and network[ 'driver_opts' ] is not none %}
     driver_opts:
-{% for key, value in current_project.value.networks[ 'driver_opts' ].items() %}
+{% for key, value in network[ 'driver_opts' ].items() %}
       {{ key }}: {{ value }}
 {% endfor %}
 {% endif %}
-{% if current_project.value.networks[ 'ipam' ] is defined and current_project.value.networks[ 'ipam' ] is not none %}
+{% if network[ 'ipam' ] is defined and network[ 'ipam' ] is not none %}
     ipam:
-{% if current_project.value.networks[ 'ipam' ]['driver'] is defined and current_project.value.networks[ 'ipam' ]['driver'] is not none %}
-      driver: {{ current_project.value.networks[ 'ipam' ]['driver'] }}
+{% if network[ 'ipam' ]['driver'] is defined and network[ 'ipam' ]['driver'] is not none %}
+      driver: {{ network[ 'ipam' ]['driver'] }}
 {% endif %}
-{% if current_project.value.networks[ 'ipam' ]['config'] is defined and current_project.value.networks[ 'ipam' ]['config'] | length > 0 %}
+{% if network[ 'ipam' ]['config'] is defined and network[ 'ipam' ]['config'] | length > 0 %}
       config:
-{% for ipam_config_item in current_project.value.networks[ 'ipam' ]['config'] %}
+{% for ipam_config_item in network[ 'ipam' ]['config'] %}
         - subnet: {{ ipam_config_item.subnet }}
 {% if ipam_config_item.ip_range is defined and ipam_config_item.ip_range is not none %}
           ip_range: {{ ipam_config_item.ip_range }}
@@ -114,16 +113,16 @@ networks:
 {% endfor %}
 {% endif %}
 {% endif %}
-{% if current_project.value.networks[ 'labels' ] is defined %}
-{% if current_project.value.networks[ 'labels' ] is mapping %}
+{% if network[ 'labels' ] is defined %}
+{% if network[ 'labels' ] is mapping %}
     labels:
-{% for key, value in current_project.value.networks[ 'labels' ].items() %}
+{% for key, value in network[ 'labels' ].items() %}
       {{ key }}: {{ value }}
 {% endfor %}
 {% endif %}
-{% if current_project.value.networks[ 'labels' ] | length > 0 %}
+{% if network[ 'labels' ] | length > 0 %}
     labels:
-{% for network_label in current_project.value.networks[ 'labels' ] %}
+{% for network_label in network[ 'labels' ] %}
       - {{ network_label }}
 {% endfor %}
 {% endif %}
