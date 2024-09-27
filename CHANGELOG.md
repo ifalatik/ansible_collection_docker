@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## tbd
+
+### project_deployment
+
+#### Breaking Changes
+- Deprecate `project_deployment_projects.<project>.external_networks` in favor of `project_deployment_projects.<project>.networks`.
+    - The role execution will fail if `external_networks` is set.
+    - To migrate, set `networks.<network>.external: true` in the `networks` key of the project.
+- Add network configuration options via `project_deployment_projects.<project>.networks`.
+    - Supports the same syntax and options as normal docker-compose networks. [Reference](https://docs.docker.com/reference/compose-file/networks/)
+
+#### General Improvements
+- Remove empty new line from deployed docker-compose.yml before the `services` key, if no `version` is set.
+
 ## v2.3.7
 
 ### project_deployment

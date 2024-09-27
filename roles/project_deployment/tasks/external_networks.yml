@@ -1,0 +1,56 @@
+---
+
+- name: Reset network_labels
+  ansible.builtin.set_fact:
+    network_labels: "{{ [] }}"
+
+- name: Parse network labels for external networks
+  ansible.builtin.set_fact:
+    # convert to a dictionary
+    # current_network.value.labels is a list of strings
+    # split each label at the first '='
+    # flatten and batch ensure that if no '=' is present, the label is added as key with value ""
+    network_labels: "{{ current_network.value.labels
+      | map('split', '=', 1)
+      | flatten | batch(2, '')
+      | items2dict(key_name=0, value_name=1) }}"
+  # is defined and is list
+  when: current_network.value.labels is defined
+    and current_network.value.labels is not string
+    and current_network.value.labels is not mapping
+    and current_network.value.labels is iterable
+
+- name: Set network labels for external networks
+  ansible.builtin.set_fact:
+    network_labels: "{{ current_network.value.labels }}"
+  # is defined and is dictionary
+  when: current_network.value.labels is defined
+    and current_network.value.labels is not string
+    and current_network.value.labels is iterable
+    and current_network.value.labels is mapping
+
+- name: Reset ipam_config
+  ansible.builtin.set_fact:
+    ipam_config: "{{ [] }}"
+
+- name: Rename ipam.config.ip_range to ipam.config.iprange
+  ansible.builtin.set_fact:
+    ipam_config: "{{ ipam_config | default([])
+      + [item | combine({'iprange': item.ip_range})]
+      | ansible.utils.remove_keys(target=['ip_range']) }}"
+  with_list: "{{ current_network.value.ipam.config }}"
+  when: current_network.value.ipam.config is defined
+
+- name: Ensure external network exist
+  community.docker.docker_network:
+    name: "{{ network.key }}"
+    attachable: "{{ current_network.value.attachable | default(omit) }}"
+    driver: "{{ current_network.value.driver | default(omit) }}"
+    driver_options: "{{ current_network.value.driver_opts | default(omit) }}"
+    enable_ipv6: "{{ current_network.value.enable_ipv6 | default(omit) }}"
+    internal: "{{ current_network.value.internal | default(omit) }}"
+    ipam_config: "{{ ipam_config | default(omit) }}"
+    ipam_driver: "{{ current_network.value.ipam.driver | default(omit) }}"
+    ipam_driver_options: "{{ current_network.value.ipam.options | default(omit) }}"
+    labels: "{{ network_labels | default(omit) }}"
+    state: present

@@ -1,5 +1,8 @@
 ---
 
+- name: Handle deprecations
+  ansible.builtin.include_tasks: "handle_deprecations.yml"
+
 - name: Ensure correct python requirements are installed on hosts
   when: project_deployment_install_python_requirements
   become_user: "{{ project_deployment_docker_user }}"

@@ -42,6 +42,7 @@ tags: ['linux', 'application', 'docker']
 dependencies:
   community.docker: ">=3.6.0"
   ansible.posix: ">=1.0.0"
+  ansible.utils: ">2.5.0"
 
 # The URL of the originating SCM repository
 repository: https://github.com/ifalatik/ansible_collection_docker

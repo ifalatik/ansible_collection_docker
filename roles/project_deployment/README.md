@@ -191,7 +191,10 @@ This would require for the files `traefik.yml`, `dynamic/dynamic_conf.yml` and t
                 max-size: "100m"
                 max-file: "3"
             restart: unless-stopped
-        external_networks: ["traefik", "docker-proxy"]
+        networks:
+          traefik:
+            external: true
+          docker-proxy:
         regex_secret_remote_paths:
           - '.*/certs.*'
         # don't restart service when dynamic configuration changes

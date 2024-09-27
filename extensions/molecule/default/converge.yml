@@ -34,7 +34,7 @@
       vars:
         project_deployment_base_path: "/opt/multiple/"
         project_deployment_projects:
-          - nginx:
+          - nginx_mutliple:
               services:
                 nginx1:
                   image: "nginx:alpine"
@@ -62,5 +62,57 @@
                     interval: "10s"
                     timeout: "5s"
                     retries: 3
+
+    - name: Run Project Deployment with different kinds of networking setups
+      ansible.builtin.include_role:
+        name: ifalatik.docker.project_deployment
+      vars:
+        project_deployment_base_path: "/opt/networking"
+        project_deployment_projects:
+          - nginx_networking:
+              services:
+                nginx_networking:
+                  image: "nginx:alpine"
+                  container_name: "nginx_networking"
+                  healthcheck:
+                    test: "curl --fail http://localhost:80 || exit 1"
+                    interval: "10s"
+                    timeout: "5s"
+                    retries: 3
+                  networks:
+                    - net1
+                    - net2
+              networks:
+                net1:
+                  driver: bridge
+                  driver_opts:
+                    com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+                  attachable: false
+                  enable_ipv6: false
+                  external: true
+                  ipam:
+                    driver: default
+                    config:
+                      - subnet: 172.28.0.0/21
+                        ip_range: 172.28.5.0/24
+                        gateway: 172.28.5.254
+                        aux_addresses:
+                          host1: 172.28.1.5
+                          host2: 172.28.1.6
+                          host3: 172.28.1.7
+                    options:
+                      foo: bar
+                      baz: "0"
+                  internal: true
+                  labels:
+                    com.dict_label.description: "Financial transaction network"
+                    com.dict_label.department: "Finance"
+                    com.dict_label.label-with-empty-value: ""
+                net2:
+                  external: true
+                  labels:
+                    - "com.list_label.description=Financial transaction network"
+                    - "com.list_label.department=Finance"
+                    - "com.list_label.label-with-empty-value"
 
 ...
