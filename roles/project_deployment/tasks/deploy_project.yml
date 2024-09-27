@@ -38,19 +38,18 @@
     group: "{{ project_deployment_group }}"
   become: true
 
-- name: Ensure external networks exist
-  community.docker.docker_network:
-    name: "{{ network }}"
-    state: present
-  with_list: "{{ project.value.networks
+- name: Include tasks for external networks
+  ansible.builtin.include_tasks: external_networks.yml
+  vars:
+    current_network: "{{ network }}"
+  with_dict: "{{ project.value.networks
     | dict2items
     | selectattr('value.external', 'defined')
     | selectattr('value.external', 'equalto', true)
-    | map(attribute='key')
-    | list }}"
+    | items2dict }}"
   loop_control:
     loop_var: network
-  register: "docker_network_out"
+  when: project.value.networks is defined
 
 - name: Clear collected docker-volumes
   ansible.builtin.set_fact:
