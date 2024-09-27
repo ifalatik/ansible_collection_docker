@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v3.0.2
+
+### project_deployment
+- Fix a bug when a network is defined as external but no labels were set.
+
 ## v3.0.1
 
 ### project_deployment
