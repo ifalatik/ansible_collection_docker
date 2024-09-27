@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v3.0.1
+
+### project_deployment
+- Update README
+
 ## v3.0.0
 
 ### project_deployment

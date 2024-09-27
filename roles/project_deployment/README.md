@@ -14,7 +14,7 @@ Requirements
 Role Variables
 --------------
 
-The default version of docker-compose files. Can be overridden on a per project basis.
+The default version of docker-compose files. Can be overridden on a per project basis. You can also leave this unset, to not set a version in the docker-compose file.
 
     project_deployment_docker_compose_file_version: "2"
 
@@ -45,22 +45,21 @@ The docker projects to be deployed:
         docker_compose_file_version:
         services:
           service1:
-            key: value
-            key:
-              - list_item
-            logging:
-              ...
-            healthcheck:
-              ...
+            # service configuration options
           service2:
           ...
-        external_networks:
-          - network1
-          - ...
+        networks:
+          network1:
+            # network configuration options
+          network2:
         regex_secret_remote_paths:
           - regex1
           - ...
+        regex_ignore_changes_remote_paths:
+          - regex1
+          - ...
       project2:
+        ...
 
 Currently supported docker-compose keys are:
 - image
@@ -98,14 +97,14 @@ Currently supported docker-compose keys are:
 Often docker projects are deployed in combination with different files. To accomodate for this, you can put your files or templates into the following directories, to deploy them alongside the docker-compose files.
 
 ```yaml
-- playbook_dir + '/docker-project-deployment/files/' + project_name (Files will be deployed for every project with matching project_name.)
+- playbook_dir + '/docker-project-deployment/files/' + project_name (files will be deployed for every project with matching project_name.)
 
-- playbook_dir + '/docker-project-deployment/templates/' + project_name (Templates will be deployed for every project with matching project_name. Templates can have the .j2 file extension, which will be stripped on deployment, but it isn't required.)
+- playbook_dir + '/docker-project-deployment/templates/' + project_name (templates will be deployed for every project with matching project_name. Templates can have the .j2 file extension, which will be stripped on deployment, but it isn't required.)
 
 - playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_name (files will be deployed for a the host `inventory_hostname` and for the project `project_name` only.)
 ```
 
-Host-files will always be deployed. If a file or template has the same remote path as a host-file only the host-file will be deployed.
+Host-specific files will always be deployed. If a file or template has the same remote path as a host-file only the host-file will be deployed.
 
 Subdirectories will also be deployed to the host(s). e.g.:
 
@@ -126,8 +125,6 @@ Subdirectories will also be deployed to the host(s). e.g.:
 |   | ...
 ```
 will lead to `{{ project_deployment_base_path }}/project1/dir1/file1` on the host.
-
-**Currently only external networks are supported!**
 
 For more information take a look at `defaults/main.yml`
 
