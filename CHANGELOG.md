@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v3.0.4
+
+### project_deployment
+- Fix `labels` section being defined twice in `docker-compose.yml` when `labels` is a dictionary.
+
 ## v3.0.3
 
 ### project_deployment

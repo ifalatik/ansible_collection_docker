@@ -119,8 +119,7 @@ networks:
 {% for key, value in network[ 'labels' ].items() %}
       {{ key }}: {{ value }}
 {% endfor %}
-{% endif %}
-{% if network[ 'labels' ] | length > 0 %}
+{% elif network[ 'labels' ] | length > 0 %}
     labels:
 {% for network_label in network[ 'labels' ] %}
       - {{ network_label }}
