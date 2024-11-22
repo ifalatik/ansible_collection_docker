@@ -12,12 +12,14 @@
         name: "python3-pip"
         state: present
     - name: Uninstall docker-py
+      become: true  # required for ansible-lint
       become_user: "{{ project_deployment_docker_user }}"
       ansible.builtin.pip:
         name: "docker-py"
         state: absent
       ignore_errors: "{{ ansible_check_mode }}"
     - name: Install python requirements
+      become: true  # required for ansible-lint
       become_user: "{{ project_deployment_docker_user }}"
       ansible.builtin.pip:
         name: "docker"
