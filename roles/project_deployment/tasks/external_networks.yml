@@ -56,3 +56,5 @@
     ipam_driver_options: "{{ current_network.value.ipam.options | default(omit) }}"
     labels: "{{ network_labels | default(omit) }}"
     state: present
+  become: true
+  become_user: "{{ project_deployment_docker_user }}"
