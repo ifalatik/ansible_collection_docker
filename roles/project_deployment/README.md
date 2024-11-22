@@ -198,5 +198,5 @@ This would require for the files `traefik.yml`, `dynamic/dynamic_conf.yml` and t
         regex_ignore_changes_remote_paths: ['.*/dynamic_conf\.yml$']
 
   roles:
-      - docker_project_deployment
+      - role: ifalatik.docker.project_deployment
 ```
