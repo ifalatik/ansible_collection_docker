@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v3.0.5
+
+### project_deployment
+- Fix python3-pip not being installed as become_user (root)
+- Remove unused handler outputs
+- Refactor: consistent usage of become
+- Refactor: remove unused become: false
+- Fix: become `project_deployment_docker_user` when creating docker networks
+
 ## v3.0.4
 
 ### project_deployment
