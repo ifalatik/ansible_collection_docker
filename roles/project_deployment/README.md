@@ -66,6 +66,7 @@ Currently supported docker-compose keys are:
 - platform
 - container_name
 - privileged
+- user
 - init
 - command
 - mem_limit

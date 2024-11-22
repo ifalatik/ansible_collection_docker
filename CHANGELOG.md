@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v3.0.6
+- Add `user` key to compose
+
 ## v3.0.5
 
 ### project_deployment
