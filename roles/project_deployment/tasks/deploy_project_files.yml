@@ -4,14 +4,12 @@
   ansible.builtin.stat:
     path: "{{ playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_name }}"
   delegate_to: "localhost"
-  become: false
   register: host_files_dir
 
 - name: "Get files-directory for {{ project_name }}"
   ansible.builtin.stat:
     path: "{{ playbook_dir + '/docker-project-deployment/files/' + project_name }}"
   delegate_to: "localhost"
-  become: false
   register: files_dir
 
 - name: "Deploy files-directory for {{ project_name }}"
@@ -25,7 +23,6 @@
   ansible.builtin.stat:
     path: "{{ playbook_dir + '/docker-project-deployment/templates/' + project_name }}"
   delegate_to: "localhost"
-  become: false
   register: templates_dir
 
 - name: "Deploy templates-directory for {{ project_name }}"
@@ -39,7 +36,6 @@
   ansible.builtin.stat:
     path: "{{ playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_name + '/docker-compose.yml' }}"
   delegate_to: "localhost"
-  become: false
   register: host_compose_file
 
 - name: Copy docker-compose.yml template block

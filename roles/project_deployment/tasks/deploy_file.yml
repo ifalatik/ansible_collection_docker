@@ -1,10 +1,10 @@
 ---
 
 - name: "Collect potential host-file"
+  become: false
   ansible.builtin.stat:
     path: "{{ host_files_dir.stat.path + '/' + (file.path.split(project_name + '/')[1:] | join(project_name + '/')).split('.j2')[0] }}"
   delegate_to: "localhost"
-  become: false
   when: file_type != 'host_file' and host_files_dir.stat.isdir is defined and host_files_dir.stat.isdir
   register: potential_host_file
 
@@ -21,10 +21,10 @@
       else project_deployment_secret_file_mode }}"
     owner: "{{ project_deployment_owner }}"
     group: "{{ project_deployment_group }}"
+  become: true
   diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
   when: file_type == 'host_file' or
     ( file_type == 'file' and not ( potential_host_file.stat.exists is defined and potential_host_file.stat.exists ) )
-  become: true
   register: copy_result
 
 - name: "Copy template if no host_file exists"
@@ -36,9 +36,9 @@
       else project_deployment_secret_file_mode }}"
     owner: "{{ project_deployment_owner }}"
     group: "{{ project_deployment_group }}"
+  become: true
   diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
   when: file_type == 'template' and not ( potential_host_file.stat.exists is defined and potential_host_file.stat.exists )
-  become: true
   register: template_result
 
 - name: "Notify restart handler if changes occured and file requires a restart"

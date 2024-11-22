@@ -6,7 +6,6 @@
     recurse: true
     file_type: "directory"
   delegate_to: "localhost"
-  become: false
   register: files_subdirs
 
 - name: "Deploy subdirectories for {{ project_name }}"
@@ -18,11 +17,11 @@
     owner: "{{ project_deployment_owner }}"
     group: "{{ project_deployment_group }}"
     state: "directory"
+  become: true
   with_list: "{{ files_subdirs.files }}"
   loop_control:
     loop_var: file
   notify: ["Stop project", "Start project"]
-  become: true
 
 - name: "Collect all files in directory"
   ansible.builtin.find:
@@ -31,7 +30,6 @@
     file_type: "file"
     hidden: true
   delegate_to: "localhost"
-  become: false
   register: directory_files
 
 - name: "Deploy files or templates for {{ project_name }}"
