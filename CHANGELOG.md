@@ -1,6 +1,14 @@
 # CHANGELOG
 
+## v3.0.7
+
+### project_deployment
+- properly escape ':' in single value variables using double quotes
+    - this doesn't change how the image is deployed even when specifying a tag
+
 ## v3.0.6
+
+### project_deployment
 - Add `user` key to compose
 
 ## v3.0.5
