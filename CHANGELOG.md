@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v3.1.0
+
+### project_deployment
+- deploy value of `command` as a list wrapping multiple lines instead of
+a single line list value, if the value is passed to the role as a list
+    - if the value is a string, nothing changes
+    - this helps with some YAML string escapes, where it's easier to write the command as a list
+
 ## v3.0.8
 
 ### project_deployment
