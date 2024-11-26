@@ -8,6 +8,11 @@ a single line list value, if the value is passed to the role as a list
     - if the value is a string, nothing changes
     - this helps with some YAML string escapes, where it's easier to write the command as a list
 
+## v3.0.8
+
+### project_deployment
+- Fix a bug in docker-compose.yml template generation, when a single value variable is not a string, leading to crashes.
+
 ## v3.0.7
 
 ### project_deployment
