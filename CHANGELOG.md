@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v3.1.1
+
+### project_deployment
+- Fix a bug in docker-compose.yml template generation, when a single value variable is not a string, leading to crashes.
+    - This release incorporates the fix from v3.0.8 into the v3.1.0 release.
+
 ## v3.1.0
 
 ### project_deployment
