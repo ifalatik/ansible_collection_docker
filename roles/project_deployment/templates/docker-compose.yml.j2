@@ -15,7 +15,7 @@ services:
   {{ name }}:
 {% for variable in service_single_value_vars %}
 {% if current_service[ variable ] is defined and current_service[ variable ] is not none %}
-{% if variable != "image" and ':' in current_service[ variable ] %}
+{% if variable != "image" and current_service[ variable ] is string and ':' in current_service[ variable ] %}
     {{ variable }}: "{{ current_service[ variable ] }}"
 {% else %}
     {{ variable }}: {{ current_service[ variable ] }}
