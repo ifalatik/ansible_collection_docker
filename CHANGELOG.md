@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# v3.2.0
+
+### project_deployment
+- add overrides for owner and mode using the `project_deployment_permission_overrides` variable
+
 ## v3.1.1
 
 ### project_deployment
