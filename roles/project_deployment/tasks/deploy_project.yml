@@ -27,15 +27,23 @@
     msg: "No services to be deployed for project: {{ project_name }}"
   when: project.value.services | length == 0
 
+- name: "Set default mode for project directory"
+  ansible.builtin.set_fact:
+    default_project_directory_mode: "{{ project_deployment_directory_mode if not \
+      project_dir | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
+      else project_deployment_secret_directory_mode }}"
+
+- name: "Get permission overrides for project directory"
+  ansible.builtin.set_fact:
+    project_directory_permission_overrides: "{{ project_dir | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
+
 - name: Create project directory
   ansible.builtin.file:
     path: "{{ project_dir }}"
     state: "directory"
-    mode: "{{ project_deployment_directory_mode if not \
-      project_dir | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
-      else project_deployment_secret_directory_mode }}"
-    owner: "{{ project_deployment_owner }}"
-    group: "{{ project_deployment_group }}"
+    mode: "{{ project_directory_permission_overrides['mode'] | default(default_project_directory_mode) }}"
+    owner: "{{ project_directory_permission_overrides['owner'] | default(project_deployment_owner) }}"
+    group: "{{ project_directory_permission_overrides['group'] | default(project_deployment_group) }}"
   become: true
 
 - name: Include tasks for external networks

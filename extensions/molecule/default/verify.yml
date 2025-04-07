@@ -3,98 +3,98 @@
 - name: Verify
   hosts: all
   tasks:
-    # - name: Assert container is running and healthy
-    #   community.docker.docker_compose_v2:
-    #     project_src: "/opt/single/nginx"
-    #     services:
-    #       - "nginx"
-    #     state: "present"
-    #     wait: true
-    #     wait_timeout: 35
-    #   register: result
-    #   failed_when: result.changed
+    - name: Assert container is running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/single/nginx"
+        services:
+          - "nginx"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
 
-    # - name: Assert containers are running and healthy
-    #   community.docker.docker_compose_v2:
-    #     project_src: "/opt/multiple/nginx"
-    #     services:
-    #       - "nginx1"
-    #       - "nginx2"
-    #     state: "present"
-    #     wait: true
-    #     wait_timeout: 35
-    #   register: result
-    #   failed_when: result.changed
-    # - name: Assert containers are running and healthy
-    #   community.docker.docker_compose_v2:
-    #     project_src: "/opt/multiple/redis"
-    #     services:
-    #       - "redis"
-    #     state: "present"
-    #     wait: true
-    #     wait_timeout: 35
-    #   register: result
-    #   failed_when: result.changed
+    - name: Assert containers are running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/multiple/nginx"
+        services:
+          - "nginx1"
+          - "nginx2"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
+    - name: Assert containers are running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/multiple/redis"
+        services:
+          - "redis"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
 
-    # - name: Get content of docker-compose.yml for redis
-    #   ansible.builtin.slurp:
-    #     src: "/opt/multiple/redis/docker-compose.yml"
-    #   register: redis_compose
-    # - name: Assert container_name is 'redis-custom' for redis
-    #   ansible.builtin.assert:
-    #     that:
-    #       - "'redis-custom' == (redis_compose.content | b64decode | from_yaml).services.redis.container_name"
+    - name: Get content of docker-compose.yml for redis
+      ansible.builtin.slurp:
+        src: "/opt/multiple/redis/docker-compose.yml"
+      register: redis_compose
+    - name: Assert container_name is 'redis-custom' for redis
+      ansible.builtin.assert:
+        that:
+          - "'redis-custom' == (redis_compose.content | b64decode | from_yaml).services.redis.container_name"
 
-    # - name: Assert containers are running and healthy
-    #   community.docker.docker_compose_v2:
-    #     project_src: "/opt/networking/nginx"
-    #     services:
-    #       - "nginx_networking"
-    #     state: "present"
-    #     wait: true
-    #     wait_timeout: 35
-    #   register: result
-    #   failed_when: result.changed
+    - name: Assert containers are running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/networking/nginx"
+        services:
+          - "nginx_networking"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
 
-    # - name: Assert network net1 exists correctly
-    #   community.docker.docker_network:
-    #     name: "net1"
-    #     state: "present"
-    #     driver: bridge
-    #     driver_options:
-    #       com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
-    #     attachable: false
-    #     enable_ipv6: false
-    #     ipam_config:
-    #       - subnet: 172.28.0.0/21
-    #         iprange: 172.28.5.0/24
-    #         gateway: 172.28.5.254
-    #         aux_addresses:
-    #           host1: 172.28.1.5
-    #           host2: 172.28.1.6
-    #           host3: 172.28.1.7
-    #     ipam_driver: default
-    #     ipam_driver_options:
-    #       foo: bar
-    #       baz: "0"
-    #     internal: true
-    #     labels:
-    #       com.dict_label.description: "Financial transaction network"
-    #       com.dict_label.department: "Finance"
-    #       com.dict_label.label-with-empty-value: ""
-    #   register: result
-    #   failed_when: result.changed
+    - name: Assert network net1 exists correctly
+      community.docker.docker_network:
+        name: "net1"
+        state: "present"
+        driver: bridge
+        driver_options:
+          com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+        attachable: false
+        enable_ipv6: false
+        ipam_config:
+          - subnet: 172.28.0.0/21
+            iprange: 172.28.5.0/24
+            gateway: 172.28.5.254
+            aux_addresses:
+              host1: 172.28.1.5
+              host2: 172.28.1.6
+              host3: 172.28.1.7
+        ipam_driver: default
+        ipam_driver_options:
+          foo: bar
+          baz: "0"
+        internal: true
+        labels:
+          com.dict_label.description: "Financial transaction network"
+          com.dict_label.department: "Finance"
+          com.dict_label.label-with-empty-value: ""
+      register: result
+      failed_when: result.changed
 
-    # - name: Assert network net2 exists correctly
-    #   community.docker.docker_network:
-    #     name: "net2"
-    #     state: "present"
-    #     labels:
-    #       com.list_label.description: "Financial transaction network"
-    #       com.list_label.department: "Finance"
-    #       com.list_label.label-with-empty-value: ""
-    #   register: result
-    #   failed_when: result.changed
+    - name: Assert network net2 exists correctly
+      community.docker.docker_network:
+        name: "net2"
+        state: "present"
+        labels:
+          com.list_label.description: "Financial transaction network"
+          com.list_label.department: "Finance"
+          com.list_label.label-with-empty-value: ""
+      register: result
+      failed_when: result.changed
 
     - name: Assert network custom_network_name exists correctly
       community.docker.docker_network:
@@ -102,3 +102,27 @@
         state: "present"
       register: result
       failed_when: result.changed
+
+    - name: Get stat for nginx_networking directory
+      ansible.builtin.stat:
+        path: "/opt/networking/nginx_networking"
+      register: nginx_networking_dir
+
+    - name: Get stat for docker-compose.yml
+      ansible.builtin.stat:
+        path: "/opt/networking/nginx_networking/docker-compose.yml"
+      register: docker_compose_stat
+
+    - name: Assert permission overrides for nginx_networking directory
+      ansible.builtin.assert:
+        that:
+          - nginx_networking_dir.stat.mode == "0755"
+          - nginx_networking_dir.stat.pw_name == "root"
+          - nginx_networking_dir.stat.gr_name == "docker"
+
+    - name: Assert permission overrides for docker-compose.yml
+      ansible.builtin.assert:
+        that:
+          - docker_compose_stat.stat.mode == "0644"
+          - docker_compose_stat.stat.pw_name == "root"
+          - docker_compose_stat.stat.gr_name == "docker"

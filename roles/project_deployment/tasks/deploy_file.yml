@@ -12,15 +12,23 @@
   ansible.builtin.set_fact:
     remote_path: "{{ project_dir + '/' + (file.path.split(project_name + '/')[1:] | join(project_name + '/')).split('.j2')[0] }}"
 
+- name: "Set default mode for remote path"
+  ansible.builtin.set_fact:
+    default_file_mode: "{{ project_deployment_file_mode if not \
+      remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
+      else project_deployment_secret_file_mode }}"
+
+- name: "Get permission overrides for remote path"
+  ansible.builtin.set_fact:
+    file_permission_overrides: "{{ remote_path | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
+
 - name: "Copy file if no host_file exists or copy host_file"
   ansible.builtin.copy:
     src: "{{ file.path }}"
     dest: "{{ remote_path }}"
-    mode: "{{ project_deployment_file_mode if not \
-      remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
-      else project_deployment_secret_file_mode }}"
-    owner: "{{ project_deployment_owner }}"
-    group: "{{ project_deployment_group }}"
+    mode: "{{ file_permission_overrides['mode'] | default(project_deployment_file_mode) }}"
+    owner: "{{ file_permission_overrides['owner'] | default(project_deployment_owner) }}"
+    group: "{{ file_permission_overrides['group'] | default(project_deployment_group) }}"
   become: true
   diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
   when: file_type == 'host_file' or
@@ -31,11 +39,9 @@
   ansible.builtin.template:
     src: "{{ file.path }}"
     dest: "{{ remote_path }}"
-    mode: "{{ project_deployment_file_mode if not \
-      remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
-      else project_deployment_secret_file_mode }}"
-    owner: "{{ project_deployment_owner }}"
-    group: "{{ project_deployment_group }}"
+    mode: "{{ file_permission_overrides['mode'] | default(project_deployment_file_mode) }}"
+    owner: "{{ file_permission_overrides['owner'] | default(project_deployment_owner) }}"
+    group: "{{ file_permission_overrides['group'] | default(project_deployment_group) }}"
   become: true
   diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
   when: file_type == 'template' and not ( potential_host_file.stat.exists is defined and potential_host_file.stat.exists )

@@ -36,6 +36,13 @@ Configure owner and access modes:
     project_deployment_owner: "{{ ansible_user }}"
     project_deployment_group: "{{ ansible_user }}"
 
+    project_deployment_permission_overrides: {}
+    # This is a dictionary of dictionaries, where the key is the absolute path to the file or directory on the remote host,
+    # and the value is a dictionary with the following keys:
+    # - mode: The mode to set (e.g. "0644")
+    # - owner: The owner to set (e.g. "root")
+    # - group: The group to set (e.g. "root")
+
 The docker projects to be deployed:
 
     project_deployment_projects_to_deploy: ["project1"] (leave empty to deploy all )

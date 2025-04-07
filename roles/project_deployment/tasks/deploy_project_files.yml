@@ -38,6 +38,16 @@
   delegate_to: "localhost"
   register: host_compose_file
 
+- name: "Set default mode for docker-compose.yml"
+  ansible.builtin.set_fact:
+    default_compose_mode: "{{ project_deployment_file_mode if not \
+      (project_dir + '/docker-compose.yml') | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
+      else project_deployment_secret_file_mode }}"
+
+- name: "Get permission overrides for docker-compose.yml"
+  ansible.builtin.set_fact:
+    compose_permission_overrides: "{{ (project_dir + '/docker-compose.yml') | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
+
 - name: Copy docker-compose.yml template block
   when: not host_compose_file.stat.exists
   block:
@@ -45,9 +55,9 @@
       ansible.builtin.template:
         src: "docker-compose.yml.j2"
         dest: "{{ project_dir + '/docker-compose.yml' }}"
-        mode: "{{ project_deployment_file_mode }}"
-        owner: "{{ project_deployment_owner }}"
-        group: "{{ project_deployment_group }}"
+        mode: "{{ compose_permission_overrides['mode'] | default(default_compose_mode) }}"
+        owner: "{{ compose_permission_overrides['owner'] | default(project_deployment_owner) }}"
+        group: "{{ compose_permission_overrides['group'] | default(project_deployment_group) }}"
         lstrip_blocks: true
       register: compose_copy_result
       become: true
