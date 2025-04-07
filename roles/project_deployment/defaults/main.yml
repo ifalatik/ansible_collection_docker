@@ -13,6 +13,13 @@ project_deployment_secret_directory_mode: "0770"
 
 project_deployment_owner: "{{ ansible_user }}"
 project_deployment_group: "{{ ansible_user }}"
+
+project_deployment_permission_overrides: {}
+  # <remote path>: - this will override the default permissions for the path
+  #   owner: <user>
+  #   group: <group>
+  #   mode: <mode>
+
 # User that restarts the services
 project_deployment_docker_user: "{{ ansible_user }}"
 

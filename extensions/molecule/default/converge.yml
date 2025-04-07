@@ -118,5 +118,13 @@
                 net3:
                   name: "custom_network_name"
                   external: true
-
+        project_deployment_permission_overrides:
+          '/opt/networking/nginx_networking':
+            owner: "root"
+            group: "docker"
+            mode: "0755"  # instead of 0775
+          '/opt/networking/nginx_networking/docker-compose.yml':
+            owner: "root"
+            group: "docker"
+            mode: "0644"  # instead of 0664
 ...

@@ -102,3 +102,27 @@
         state: "present"
       register: result
       failed_when: result.changed
+
+    - name: Get stat for nginx_networking directory
+      ansible.builtin.stat:
+        path: "/opt/networking/nginx_networking"
+      register: nginx_networking_dir
+
+    - name: Get stat for docker-compose.yml
+      ansible.builtin.stat:
+        path: "/opt/networking/nginx_networking/docker-compose.yml"
+      register: docker_compose_stat
+
+    - name: Assert permission overrides for nginx_networking directory
+      ansible.builtin.assert:
+        that:
+          - nginx_networking_dir.stat.mode == "0755"
+          - nginx_networking_dir.stat.pw_name == "root"
+          - nginx_networking_dir.stat.gr_name == "docker"
+
+    - name: Assert permission overrides for docker-compose.yml
+      ansible.builtin.assert:
+        that:
+          - docker_compose_stat.stat.mode == "0644"
+          - docker_compose_stat.stat.pw_name == "root"
+          - docker_compose_stat.stat.gr_name == "docker"
