@@ -12,6 +12,11 @@
   ansible.builtin.set_fact:
     remote_path: "{{ project_dir + '/' + (file.path.split(project_name + '/')[1:] | join(project_name + '/')).split('.j2')[0] }}"
 
+- name: "Set effective owner for file"
+  ansible.builtin.set_fact:
+    project_deployment_file_owner: "{{ project_deployment_file_owner_overrides[file.path | basename].owner | default(project_deployment_owner) }}"
+    project_deployment_file_group: "{{ project_deployment_file_owner_overrides[file.path | basename].group | default(project_deployment_group) }}"
+
 - name: "Copy file if no host_file exists or copy host_file"
   ansible.builtin.copy:
     src: "{{ file.path }}"
@@ -19,8 +24,8 @@
     mode: "{{ project_deployment_file_mode if not \
       remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
       else project_deployment_secret_file_mode }}"
-    owner: "{{ project_deployment_owner }}"
-    group: "{{ project_deployment_group }}"
+    owner: "{{ project_deployment_file_owner }}"
+    group: "{{ project_deployment_file_group }}"
   become: true
   diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
   when: file_type == 'host_file' or
