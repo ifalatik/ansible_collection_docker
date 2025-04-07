@@ -4,64 +4,64 @@
   hosts: all
   gather_facts: true
   tasks:
-    # - name: Run Project Deployment for no projects
-    #   ansible.builtin.include_role:
-    #     name: ifalatik.docker.project_deployment
-    #   vars:
-    #     project_deployment_projects: []
-    #     project_deployment_base_path: "/opt/empty/"
+    - name: Run Project Deployment for no projects
+      ansible.builtin.include_role:
+        name: ifalatik.docker.project_deployment
+      vars:
+        project_deployment_projects: []
+        project_deployment_base_path: "/opt/empty/"
 
-    # - name: Run Project Deployment for a single project
-    #   ansible.builtin.include_role:
-    #     name: ifalatik.docker.project_deployment
-    #   vars:
-    #     project_deployment_base_path: "/opt/single/"
-    #     project_deployment_projects:
-    #       - nginx:
-    #           services:
-    #             nginx:
-    #               image: "nginx:alpine"
-    #               container_name: "nginx_single"
-    #               healthcheck:
-    #                 test: "curl --fail http://localhost:80 || exit 1"
-    #                 interval: "10s"
-    #                 timeout: "5s"
-    #                 retries: 3
+    - name: Run Project Deployment for a single project
+      ansible.builtin.include_role:
+        name: ifalatik.docker.project_deployment
+      vars:
+        project_deployment_base_path: "/opt/single/"
+        project_deployment_projects:
+          - nginx:
+              services:
+                nginx:
+                  image: "nginx:alpine"
+                  container_name: "nginx_single"
+                  healthcheck:
+                    test: "curl --fail http://localhost:80 || exit 1"
+                    interval: "10s"
+                    timeout: "5s"
+                    retries: 3
 
-    # - name: Run Project Deployment for multiple projects
-    #   ansible.builtin.include_role:
-    #     name: ifalatik.docker.project_deployment
-    #   vars:
-    #     project_deployment_base_path: "/opt/multiple/"
-    #     project_deployment_projects:
-    #       - nginx_mutliple:
-    #           services:
-    #             nginx1:
-    #               image: "nginx:alpine"
-    #               container_name: "nginx1"
-    #               healthcheck:
-    #                 test: "curl --fail http://localhost:80 || exit 1"
-    #                 interval: "10s"
-    #                 timeout: "5s"
-    #                 retries: 3
-    #             nginx2:
-    #               image: "nginx:alpine"
-    #               container_name: "nginx2"
-    #               healthcheck:
-    #                 test: "curl --fail http://localhost:80 || exit 1"
-    #                 interval: "10s"
-    #                 timeout: "5s"
-    #                 retries: 3
-    #       - redis:
-    #           services:
-    #             redis:
-    #               image: "redis:alpine"
-    #               container_name: "redis"
-    #               healthcheck:
-    #                 test: "redis-cli ping"
-    #                 interval: "10s"
-    #                 timeout: "5s"
-    #                 retries: 3
+    - name: Run Project Deployment for multiple projects
+      ansible.builtin.include_role:
+        name: ifalatik.docker.project_deployment
+      vars:
+        project_deployment_base_path: "/opt/multiple/"
+        project_deployment_projects:
+          - nginx_mutliple:
+              services:
+                nginx1:
+                  image: "nginx:alpine"
+                  container_name: "nginx1"
+                  healthcheck:
+                    test: "curl --fail http://localhost:80 || exit 1"
+                    interval: "10s"
+                    timeout: "5s"
+                    retries: 3
+                nginx2:
+                  image: "nginx:alpine"
+                  container_name: "nginx2"
+                  healthcheck:
+                    test: "curl --fail http://localhost:80 || exit 1"
+                    interval: "10s"
+                    timeout: "5s"
+                    retries: 3
+          - redis:
+              services:
+                redis:
+                  image: "redis:alpine"
+                  container_name: "redis"
+                  healthcheck:
+                    test: "redis-cli ping"
+                    interval: "10s"
+                    timeout: "5s"
+                    retries: 3
 
     - name: Run Project Deployment with different kinds of networking setups
       ansible.builtin.include_role:
