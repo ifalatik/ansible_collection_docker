@@ -2,3 +2,6 @@ __pycache__
 /build/
 .vscode/
 tests/output/
+.ansible
+#local builds
+collections/ansible_collections/
