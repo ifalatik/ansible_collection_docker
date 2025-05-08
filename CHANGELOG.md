@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# v3.3.0
+
+### project_deployment
+- add support for ulimits
+
 # v3.2.1
 
 ### project_deployment

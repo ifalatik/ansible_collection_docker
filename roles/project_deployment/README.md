@@ -99,6 +99,7 @@ Currently supported docker-compose keys are:
 - sysctls
 - logging
 - healthcheck
+- ulimits
 
 ### files and templates
 
