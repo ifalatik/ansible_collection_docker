@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# v3.2.1
+
+### project_deployment
+- add ignore_errors for project start/stop handlers to handle missing directory
+
 # v3.2.0
 
 ### project_deployment

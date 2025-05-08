@@ -7,6 +7,8 @@
     state: absent
   become_user: "{{ project_deployment_docker_user }}"
   become: true
+  ignore_errors: "{{ ansible_check_mode }}"  # the directory might not exist
+  # TODO: add a nicer check for the directory existence
 
 - name: "Start project"
   community.docker.docker_compose_v2:
@@ -14,5 +16,7 @@
     state: present
   become_user: "{{ project_deployment_docker_user }}"
   become: true
+  ignore_errors: "{{ ansible_check_mode }}"  # the directory might not exist
+  # TODO: add a nicer check for the directory existence
 
 ...
