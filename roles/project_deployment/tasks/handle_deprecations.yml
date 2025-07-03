@@ -10,3 +10,4 @@
   loop_control:
     loop_var: "project"
     label: "{{ project.key }}"
+  when: project_deployment_projects

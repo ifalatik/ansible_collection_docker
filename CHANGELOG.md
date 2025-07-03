@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# v3.3.1
+
+## project_deployment
+- fix: assert project_deployment_projects is not None before trying to iterate over it
+
 # v3.3.0
 
 ### project_deployment
