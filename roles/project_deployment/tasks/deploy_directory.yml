@@ -1,47 +1,55 @@
 ---
 
-- name: "Collect subdirectories for {{ project_name }}"
+- name: "Collect subdirectories for {{ project_deployment_project_name }}"
   ansible.builtin.find:
     paths: "{{ directory.stat.path }}/"
     recurse: true
     file_type: "directory"
   delegate_to: "localhost"
-  register: files_subdirs
+  register: project_deployment_files_subdirs
 
 - name: "Set remote path for each subdirectory"
   ansible.builtin.set_fact:
-    remote_paths_subdirs: "{{ remote_paths_subdirs | default({}) | combine({ subdir.path: project_dir + '/' + subdir.path.split(project_name + '/')[1:] | join(project_name + '/') }) }}"
-  with_list: "{{ files_subdirs.files }}"
+    project_deployment_remote_paths_subdirs: "{{ project_deployment_remote_paths_subdirs
+      | default({})
+      | combine({subdir.path: project_deployment_project_dir + '/' + subdir.path.split(project_name + '/')[1:]
+        | join(project_name + '/')}) }}"
+  with_list: "{{ project_deployment_files_subdirs.files }}"
   loop_control:
     loop_var: subdir
 
 - name: "Set default mode for each subdirectory"
   ansible.builtin.set_fact:
-    default_mode_subdirs: "{{ mode_subdirs | default({}) | combine({ subdir.path:
-      project_deployment_directory_mode if not \
-      (project_dir + '/' + subdir.path.split(project_name + '/')[1:] | join(project_name + '/')) | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
-      else project_deployment_secret_directory_mode }) }}"
-  with_list: "{{ files_subdirs.files }}"
+    project_deployment_default_mode_subdirs: "{{ mode_subdirs
+      | default({})
+      | combine({subdir.path: project_deployment_directory_mode
+        if not (project_dir + '/' + subdir.path.split(project_name + '/')[1:]
+        | join(project_name + '/'))
+        | ifalatik.docker.any_regex_matches(project_deployment_regex_secret_remote_paths)
+        else project_deployment_secret_directory_mode}) }}"
+  with_list: "{{ project_deployment_files_subdirs.files }}"
   loop_control:
     loop_var: subdir
 
 - name: "Get permission overrides for each subdirectory"
   ansible.builtin.set_fact:
-    permission_overrides: "{{ permission_overrides | default({}) | combine({ subdir.path: \
-      remote_paths_subdirs[subdir.path] | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }) }}"
-  with_list: "{{ files_subdirs.files }}"
+    project_deployment_permission_overrides: "{{ project_deployment_permission_overrides
+      | default({})
+      | combine({subdir.path: project_deployment_remote_paths_subdirs[subdir.path]
+        | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides)}) }}"
+  with_list: "{{ project_deployment_files_subdirs.files }}"
   loop_control:
     loop_var: subdir
 
-- name: "Deploy subdirectories for {{ project_name }}"
+- name: "Deploy subdirectories for {{ project_deployment_project_name }}"
   ansible.builtin.file:
-    path: "{{ remote_paths_subdirs[subdir.path] }}"
-    mode: "{{ permission_overrides[subdir.path]['mode'] | default(default_mode_subdirs[subdir.path]) }}"
-    owner: "{{ permission_overrides[subdir.path]['owner'] | default(project_deployment_owner) }}"
-    group: "{{ permission_overrides[subdir.path]['group'] | default(project_deployment_group) }}"
+    path: "{{ project_deployment_remote_paths_subdirs[subdir.path] }}"
+    mode: "{{ project_deployment_permission_overrides[subdir.path]['mode'] | default(project_deployment_default_mode_subdirs[subdir.path]) }}"
+    owner: "{{ project_deployment_permission_overrides[subdir.path]['owner'] | default(project_deployment_owner) }}"
+    group: "{{ project_deployment_permission_overrides[subdir.path]['group'] | default(project_deployment_group) }}"
     state: "directory"
   become: true
-  with_list: "{{ files_subdirs.files }}"
+  with_list: "{{ project_deployment_files_subdirs.files }}"
   loop_control:
     loop_var: subdir
   notify: ["Stop project", "Start project"]
@@ -53,12 +61,10 @@
     file_type: "file"
     hidden: true
   delegate_to: "localhost"
-  register: directory_files
+  register: project_deployment_project_deployment_directory_files
 
-- name: "Deploy files or templates for {{ project_name }}"
+- name: "Deploy files or templates for {{ project_deployment_project_name }}"
   ansible.builtin.include_tasks: "deploy_file.yml"
-  with_list: "{{ directory_files.files }}"
+  with_list: "{{ project_deployment_directory_files.files }}"
   loop_control:
     loop_var: "file"
-
-...
