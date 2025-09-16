@@ -3,18 +3,18 @@
 - name: "Collect potential host-file"
   become: false
   ansible.builtin.stat:
-    path: "{{ host_files_dir.stat.path + '/' + (file.path.split(project_name + '/')[1:] | join(project_name + '/')).split('.j2')[0] }}"
+    path: "{{ host_files_dir.stat.path + '/' + (file.path.split(project_deployment_project_name + '/')[1:] | join(project_deployment_project_name + '/')).split('.j2')[0] }}"
   delegate_to: "localhost"
   when:
     - file_type != 'host_file'
     - host_files_dir.stat.isdir is defined
     - host_files_dir.stat.isdir
-  register: project_deployment_project_deployment_potential_host_file
+  register: project_deployment_potential_host_file
 
 - name: "Define remote path"
   ansible.builtin.set_fact:
-    project_deployment_remote_path: "{{ project_deployment_project_dir + '/' + (file.path.split(project_name + '/')[1:]
-      | join(project_name + '/')).split('.j2')[0] }}"
+    project_deployment_remote_path: "{{ project_deployment_project_dir + '/' + (file.path.split(project_deployment_project_name + '/')[1:]
+      | join(project_deployment_project_name + '/')).split('.j2')[0] }}"
 
 - name: "Set default mode for remote path"
   ansible.builtin.set_fact:
@@ -61,6 +61,6 @@
     quiet: true
   changed_when: true
   when:
-    - copy_result.changed or template_result.changed
+    - project_deployment_copy_result.changed or project_deployment_template_result.changed
     - not (project_deployment_remote_path | ifalatik.docker.any_regex_matches(project_deployment_regex_ignore_changes_remote_paths))
   notify: ["Stop project", "Start project"]

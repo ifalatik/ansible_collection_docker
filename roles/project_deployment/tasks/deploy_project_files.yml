@@ -10,7 +10,7 @@
   ansible.builtin.stat:
     path: "{{ playbook_dir + '/docker-project-deployment/files/' + project_deployment_project_name }}"
   delegate_to: "localhost"
-  register: project_deployment_project_deployment_files_dir
+  register: project_deployment_files_dir
 
 - name: "Deploy files-directory for {{ project_deployment_project_name }}"
   ansible.builtin.include_tasks: "deploy_directory.yml"
@@ -25,7 +25,7 @@
   ansible.builtin.stat:
     path: "{{ playbook_dir + '/docker-project-deployment/templates/' + project_deployment_project_name }}"
   delegate_to: "localhost"
-  register: project_deployment_project_deployment_templates_dir
+  register: project_deployment_templates_dir
 
 - name: "Deploy templates-directory for {{ project_deployment_project_name }}"
   ansible.builtin.include_tasks: "deploy_directory.yml"
