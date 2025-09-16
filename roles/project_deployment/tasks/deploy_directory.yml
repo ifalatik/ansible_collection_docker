@@ -23,7 +23,7 @@
     project_deployment_default_mode_subdirs: "{{ mode_subdirs
       | default({})
       | combine({subdir.path: project_deployment_directory_mode
-        if not (project_dir + '/' + subdir.path.split(project_name + '/')[1:]
+        if not (project_deployment_project_dir + '/' + subdir.path.split(project_name + '/')[1:]
         | join(project_name + '/'))
         | ifalatik.docker.any_regex_matches(project_deployment_regex_secret_remote_paths)
         else project_deployment_secret_directory_mode}) }}"

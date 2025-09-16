@@ -56,7 +56,7 @@
     driver_options: "{{ current_network.value.driver_opts | default(omit) }}"
     enable_ipv6: "{{ current_network.value.enable_ipv6 | default(omit) }}"
     internal: "{{ current_network.value.internal | default(omit) }}"
-    project_deployment_ipam_config: "{{ project_deployment_ipam_config | default(omit) }}"
+    ipam_config: "{{ project_deployment_ipam_config | default(omit) }}"
     ipam_driver: "{{ current_network.value.ipam.driver | default(omit) }}"
     ipam_driver_options: "{{ current_network.value.ipam.options | default(omit) }}"
     labels: "{{ network_labels | default(omit) }}"

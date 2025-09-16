@@ -45,17 +45,17 @@
 - name: "Set default mode for docker-compose.yml"
   ansible.builtin.set_fact:
     project_deployment_default_compose_mode: "{{ project_deployment_file_mode
-      if not (project_dir + '/docker-compose.yml')
+      if not (project_deployment_project_dir + '/docker-compose.yml')
       | ifalatik.docker.any_regex_matches(project_deployment_regex_secret_remote_paths)
       else project_deployment_secret_file_mode }}"
 
 - name: "Get permission overrides for docker-compose.yml"
   ansible.builtin.set_fact:
-    project_deployment_compose_permission_overrides: "{{ (project_dir + '/docker-compose.yml')
+    project_deployment_compose_permission_overrides: "{{ (project_deployment_project_dir + '/docker-compose.yml')
       | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
 
 - name: Copy docker-compose.yml template block
-  when: not host_compose_file.stat.exists
+  when: not project_deployment_host_compose_file.stat.exists
   block:
     - name: "Build and copy docker-compose.yml for {{ project_deployment_project_name }}"
       ansible.builtin.template:
@@ -74,8 +74,8 @@
         quiet: true
       changed_when: true
       when:
-        - compose_copy_result.changed
-        - "not ((project_dir + '/docker-compose.yml')
+        - project_deployment_compose_copy_result.changed
+        - "not ((project_deployment_project_dir + '/docker-compose.yml')
           | ifalatik.docker.any_regex_matches(project_deployment_regex_ignore_changes_remote_paths))"
       notify: ["Stop project", "Start project"]
 
