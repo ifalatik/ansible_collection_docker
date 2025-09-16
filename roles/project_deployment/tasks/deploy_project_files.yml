@@ -4,7 +4,7 @@
   ansible.builtin.stat:
     path: "{{ playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_deployment_project_name }}"
   delegate_to: "localhost"
-  register: project_deployment_project_deployment_host_files_dir
+  register: project_deployment_host_files_dir
 
 - name: "Get files-directory for {{ project_deployment_project_name }}"
   ansible.builtin.stat:
