@@ -1,65 +1,71 @@
 ---
 
-- name: "Get host-specific files-directory for {{ project_name }}"
+- name: "Get host-specific files-directory for {{ project_deployment_project_name }}"
   ansible.builtin.stat:
-    path: "{{ playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_name }}"
+    path: "{{ playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_deployment_project_name }}"
   delegate_to: "localhost"
-  register: host_files_dir
+  register: project_deployment_host_files_dir
 
-- name: "Get files-directory for {{ project_name }}"
+- name: "Get files-directory for {{ project_deployment_project_name }}"
   ansible.builtin.stat:
-    path: "{{ playbook_dir + '/docker-project-deployment/files/' + project_name }}"
+    path: "{{ playbook_dir + '/docker-project-deployment/files/' + project_deployment_project_name }}"
   delegate_to: "localhost"
-  register: files_dir
+  register: project_deployment_files_dir
 
-- name: "Deploy files-directory for {{ project_name }}"
+- name: "Deploy files-directory for {{ project_deployment_project_name }}"
   ansible.builtin.include_tasks: "deploy_directory.yml"
   vars:
-    directory: "{{ files_dir }}"
+    directory: "{{ project_deployment_files_dir }}"
     file_type: 'file'
-  when: files_dir.stat.isdir is defined and files_dir.stat.isdir
+  when:
+    - project_deployment_files_dir.stat.isdir is defined
+    - project_deployment_files_dir.stat.isdir
 
-- name: "Get templates-directory for {{ project_name }}"
+- name: "Get templates-directory for {{ project_deployment_project_name }}"
   ansible.builtin.stat:
-    path: "{{ playbook_dir + '/docker-project-deployment/templates/' + project_name }}"
+    path: "{{ playbook_dir + '/docker-project-deployment/templates/' + project_deployment_project_name }}"
   delegate_to: "localhost"
-  register: templates_dir
+  register: project_deployment_templates_dir
 
-- name: "Deploy templates-directory for {{ project_name }}"
+- name: "Deploy templates-directory for {{ project_deployment_project_name }}"
   ansible.builtin.include_tasks: "deploy_directory.yml"
   vars:
-    directory: "{{ templates_dir }}"
+    directory: "{{ project_deployment_templates_dir }}"
     file_type: 'template'
-  when: templates_dir.stat.isdir is defined and templates_dir.stat.isdir
+  when:
+    - project_deployment_templates_dir.stat.isdir is defined
+    - project_deployment_templates_dir.stat.isdir
 
-- name: "Get docker-compose.yml host-file for {{ project_name }}"
+- name: "Get docker-compose.yml host-file for {{ project_deployment_project_name }}"
   ansible.builtin.stat:
-    path: "{{ playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_name + '/docker-compose.yml' }}"
+    path: "{{ playbook_dir + '/docker-project-deployment/host_files/' + inventory_hostname + '/' + project_deployment_project_name + '/docker-compose.yml' }}"
   delegate_to: "localhost"
-  register: host_compose_file
+  register: project_deployment_host_compose_file
 
 - name: "Set default mode for docker-compose.yml"
   ansible.builtin.set_fact:
-    default_compose_mode: "{{ project_deployment_file_mode if not \
-      (project_dir + '/docker-compose.yml') | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
+    project_deployment_default_compose_mode: "{{ project_deployment_file_mode
+      if not (project_deployment_project_dir + '/docker-compose.yml')
+      | ifalatik.docker.any_regex_matches(project_deployment_regex_secret_remote_paths)
       else project_deployment_secret_file_mode }}"
 
 - name: "Get permission overrides for docker-compose.yml"
   ansible.builtin.set_fact:
-    compose_permission_overrides: "{{ (project_dir + '/docker-compose.yml') | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
+    project_deployment_compose_permission_overrides: "{{ (project_deployment_project_dir + '/docker-compose.yml')
+      | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
 
 - name: Copy docker-compose.yml template block
-  when: not host_compose_file.stat.exists
+  when: not project_deployment_host_compose_file.stat.exists
   block:
-    - name: "Build and copy docker-compose.yml for {{ project_name }}"
+    - name: "Build and copy docker-compose.yml for {{ project_deployment_project_name }}"
       ansible.builtin.template:
         src: "docker-compose.yml.j2"
-        dest: "{{ project_dir + '/docker-compose.yml' }}"
-        mode: "{{ compose_permission_overrides['mode'] | default(default_compose_mode) }}"
-        owner: "{{ compose_permission_overrides['owner'] | default(project_deployment_owner) }}"
-        group: "{{ compose_permission_overrides['group'] | default(project_deployment_group) }}"
+        dest: "{{ project_deployment_project_dir + '/docker-compose.yml' }}"
+        mode: "{{ project_deployment_compose_permission_overrides['mode'] | default(project_deployment_default_compose_mode) }}"
+        owner: "{{ project_deployment_compose_permission_overrides['owner'] | default(project_deployment_owner) }}"
+        group: "{{ project_deployment_compose_permission_overrides['group'] | default(project_deployment_group) }}"
         lstrip_blocks: true
-      register: compose_copy_result
+      register: project_deployment_compose_copy_result
       become: true
 
     - name: "Notify restart handler if changes occured and file requires a restart"
@@ -67,20 +73,23 @@
         that: true
         quiet: true
       changed_when: true
-      when: compose_copy_result.changed and not ((project_dir + '/docker-compose.yml') | ifalatik.docker.any_regex_matches(regex_ignore_changes_remote_paths))
+      when:
+        - project_deployment_compose_copy_result.changed
+        - "not ((project_deployment_project_dir + '/docker-compose.yml')
+          | ifalatik.docker.any_regex_matches(project_deployment_regex_ignore_changes_remote_paths))"
       notify: ["Stop project", "Start project"]
 
-- name: "Ensure docker-compose.yaml doesn't exists for {{ project_name }}"
+- name: "Ensure docker-compose.yaml doesn't exists for {{ project_deployment_project_name }}"
   ansible.builtin.file:
-    path: "{{ project_dir + '/docker-compose.yaml' }}"
+    path: "{{ project_deployment_project_dir + '/docker-compose.yaml' }}"
     state: "absent"
   become: true
 
-- name: "Deploy host-specific files for {{ project_name }}"
+- name: "Deploy host-specific files for {{ project_deployment_project_name }}"
   ansible.builtin.include_tasks: "deploy_directory.yml"
   vars:
-    directory: "{{ host_files_dir }}"
+    directory: "{{ project_deployment_host_files_dir }}"
     file_type: 'host_file'
-  when: host_files_dir.stat.isdir is defined and host_files_dir.stat.isdir
-
-...
+  when:
+    - project_deployment_host_files_dir.stat.isdir is defined
+    - project_deployment_host_files_dir.stat.isdir

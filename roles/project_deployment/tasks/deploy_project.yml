@@ -5,45 +5,46 @@
 # the variable might be overwritten with the next project, therefore restarting the wrong project
 - name: "Set project name as variable"
   ansible.builtin.set_fact:
-    project_name: "{{ project.key }}"
+    project_deployment_project_name: "{{ project.key }}"
 
 - name: "Define project directory variable"
   ansible.builtin.set_fact:
-    project_dir: "{{ project_deployment_base_path }}/{{ project_name }}"
+    project_deployment_project_dir: "{{ project_deployment_base_path }}/{{ project_deployment_project_name }}"
 
 - name: "Set regex secret paths variable"
   ansible.builtin.set_fact:
-    regex_secret_remote_paths: "{{ project.value.regex_secret_remote_paths + ['.*/\\..*'] \
+    project_deployment_regex_secret_remote_paths: "{{ project.value.regex_secret_remote_paths + ['.*/\\..*'] \
       if project.value.regex_secret_remote_paths is defined else ['.*/\\..*'] }}"
     # treats everything starting with a '.' as secret
 
 - name: "Set regex ignore changes paths variable"
   ansible.builtin.set_fact:
-    regex_ignore_changes_remote_paths: "{{ project.value.regex_ignore_changes_remote_paths \
+    project_deployment_regex_ignore_changes_remote_paths: "{{ project.value.regex_ignore_changes_remote_paths \
       if project.value.regex_ignore_changes_remote_paths is defined else [] }}"
 
 - name: "Stop Playbook if no service in project"
   ansible.builtin.fail:
-    msg: "No services to be deployed for project: {{ project_name }}"
+    msg: "No services to be deployed for project: {{ project_deployment_project_name }}"
   when: project.value.services | length == 0
 
 - name: "Set default mode for project directory"
   ansible.builtin.set_fact:
-    default_project_directory_mode: "{{ project_deployment_directory_mode if not \
-      project_dir | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
+    project_deployment_default_project_directory_mode: "{{ project_deployment_directory_mode if not \
+      project_deployment_project_dir | ifalatik.docker.any_regex_matches(project_deployment_regex_secret_remote_paths) \
       else project_deployment_secret_directory_mode }}"
 
 - name: "Get permission overrides for project directory"
   ansible.builtin.set_fact:
-    project_directory_permission_overrides: "{{ project_dir | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
+    project_deployment_project_directory_permission_overrides: "{{ project_deployment_project_dir
+      | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
 
 - name: Create project directory
   ansible.builtin.file:
-    path: "{{ project_dir }}"
+    path: "{{ project_deployment_project_dir }}"
     state: "directory"
-    mode: "{{ project_directory_permission_overrides['mode'] | default(default_project_directory_mode) }}"
-    owner: "{{ project_directory_permission_overrides['owner'] | default(project_deployment_owner) }}"
-    group: "{{ project_directory_permission_overrides['group'] | default(project_deployment_group) }}"
+    mode: "{{ project_deployment_project_directory_permission_overrides['mode'] | default(project_deployment_default_project_directory_mode) }}"
+    owner: "{{ project_deployment_project_directory_permission_overrides['owner'] | default(project_deployment_owner) }}"
+    group: "{{ project_deployment_project_directory_permission_overrides['group'] | default(project_deployment_group) }}"
   become: true
 
 - name: Include tasks for external networks
@@ -61,11 +62,12 @@
 
 - name: Clear collected docker-volumes
   ansible.builtin.set_fact:
-    project_docker_volumes: []
+    project_deployment_project_docker_volumes: []
 
-- name: "Collect docker-volumes for project {{ project_name }}"
+- name: "Collect docker-volumes for project {{ project_deployment_project_name }}"
   ansible.builtin.set_fact:
-    project_docker_volumes: "{{ ((project_docker_volumes) + (service.value.volumes | default([]) | ifalatik.docker.non_local_paths)) | unique }}"
+    project_deployment_project_docker_volumes: "{{ ((project_deployment_project_docker_volumes) + (service.value.volumes | default([])
+      | ifalatik.docker.non_local_paths)) | unique }}"
   with_dict: "{{ project.value.services }}"
   loop_control:
     loop_var: service
@@ -73,7 +75,7 @@
 - name: Deploy project files
   ansible.builtin.import_tasks: deploy_project_files.yml
   vars:
-    docker_volumes: "{{ project_docker_volumes }}"
+    project_deployment_docker_volumes: "{{ project_deployment_project_docker_volumes }}"
 
 - name: "Restart project if it was updated"
   ansible.builtin.meta: "flush_handlers"

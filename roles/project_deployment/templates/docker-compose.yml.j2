@@ -169,10 +169,10 @@ networks:
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if docker_volumes is defined and docker_volumes | length > 0 %}
+{% if project_deployment_docker_volumes is defined and project_deployment_docker_volumes | length > 0 %}
 
 volumes:
-{% for docker_volume in docker_volumes %}
+{% for docker_volume in project_deployment_docker_volumes %}
   {{ docker_volume }}:
 {% endfor %}
 {% endif %}

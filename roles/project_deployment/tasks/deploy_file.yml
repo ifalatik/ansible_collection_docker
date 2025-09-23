@@ -3,56 +3,65 @@
 - name: "Collect potential host-file"
   become: false
   ansible.builtin.stat:
-    path: "{{ host_files_dir.stat.path + '/' + (file.path.split(project_name + '/')[1:] | join(project_name + '/')).split('.j2')[0] }}"
+    path: "{{ host_files_dir.stat.path + '/' + (file.path.split(project_deployment_project_name + '/')[1:]
+      | join(project_deployment_project_name + '/')).split('.j2')[0] }}"
   delegate_to: "localhost"
-  when: file_type != 'host_file' and host_files_dir.stat.isdir is defined and host_files_dir.stat.isdir
-  register: potential_host_file
+  when:
+    - file_type != 'host_file'
+    - host_files_dir.stat.isdir is defined
+    - host_files_dir.stat.isdir
+  register: project_deployment_potential_host_file
 
 - name: "Define remote path"
   ansible.builtin.set_fact:
-    remote_path: "{{ project_dir + '/' + (file.path.split(project_name + '/')[1:] | join(project_name + '/')).split('.j2')[0] }}"
+    project_deployment_remote_path: "{{ project_deployment_project_dir + '/' + (file.path.split(project_deployment_project_name + '/')[1:]
+      | join(project_deployment_project_name + '/')).split('.j2')[0] }}"
 
 - name: "Set default mode for remote path"
   ansible.builtin.set_fact:
-    default_file_mode: "{{ project_deployment_file_mode if not \
-      remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) \
+    project_deployment_default_file_mode: "{{ project_deployment_file_mode
+      if not project_deployment_remote_path
+      | ifalatik.docker.any_regex_matches(project_deployment_regex_secret_remote_paths)
       else project_deployment_secret_file_mode }}"
 
 - name: "Get permission overrides for remote path"
   ansible.builtin.set_fact:
-    file_permission_overrides: "{{ remote_path | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
+    project_deployment_file_permission_overrides: "{{ project_deployment_remote_path
+      | ifalatik.docker.get_permission_overrides(project_deployment_permission_overrides) }}"
 
 - name: "Copy file if no host_file exists or copy host_file"
   ansible.builtin.copy:
     src: "{{ file.path }}"
-    dest: "{{ remote_path }}"
-    mode: "{{ file_permission_overrides['mode'] | default(project_deployment_file_mode) }}"
-    owner: "{{ file_permission_overrides['owner'] | default(project_deployment_owner) }}"
-    group: "{{ file_permission_overrides['group'] | default(project_deployment_group) }}"
+    dest: "{{ project_deployment_remote_path }}"
+    mode: "{{ project_deployment_file_permission_overrides['mode'] | default(project_deployment_default_file_mode) }}"
+    owner: "{{ project_deployment_file_permission_overrides['owner'] | default(project_deployment_owner) }}"
+    group: "{{ project_deployment_file_permission_overrides['group'] | default(project_deployment_group) }}"
   become: true
-  diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
+  diff: "{{ not project_deployment_remote_path | ifalatik.docker.any_regex_matches(project_deployment_regex_secret_remote_paths) }}"
   when: file_type == 'host_file' or
-    ( file_type == 'file' and not ( potential_host_file.stat.exists is defined and potential_host_file.stat.exists ) )
-  register: copy_result
+    ( file_type == 'file' and not ( project_deployment_potential_host_file.stat.exists is defined and project_deployment_potential_host_file.stat.exists ) )
+  register: project_deployment_copy_result
 
 - name: "Copy template if no host_file exists"
   ansible.builtin.template:
     src: "{{ file.path }}"
-    dest: "{{ remote_path }}"
-    mode: "{{ file_permission_overrides['mode'] | default(project_deployment_file_mode) }}"
-    owner: "{{ file_permission_overrides['owner'] | default(project_deployment_owner) }}"
-    group: "{{ file_permission_overrides['group'] | default(project_deployment_group) }}"
+    dest: "{{ project_deployment_remote_path }}"
+    mode: "{{ project_deployment_file_permission_overrides['mode'] | default(project_deployment_default_file_mode) }}"
+    owner: "{{ project_deployment_file_permission_overrides['owner'] | default(project_deployment_owner) }}"
+    group: "{{ project_deployment_file_permission_overrides['group'] | default(project_deployment_group) }}"
   become: true
-  diff: "{{ not remote_path | ifalatik.docker.any_regex_matches(regex_secret_remote_paths) }}"
-  when: file_type == 'template' and not ( potential_host_file.stat.exists is defined and potential_host_file.stat.exists )
-  register: template_result
+  diff: "{{ not project_deployment_remote_path | ifalatik.docker.any_regex_matches(project_deployment_regex_secret_remote_paths) }}"
+  when:
+    - file_type == 'template'
+    - not (project_deployment_potential_host_file.stat.exists is defined and project_deployment_potential_host_file.stat.exists)
+  register: project_deployment_template_result
 
 - name: "Notify restart handler if changes occured and file requires a restart"
   ansible.builtin.assert:  # workaround to do nothing but still notify a handler
     that: true
     quiet: true
   changed_when: true
-  when: (copy_result.changed or template_result.changed) and not (remote_path | ifalatik.docker.any_regex_matches(regex_ignore_changes_remote_paths))
+  when:
+    - project_deployment_copy_result.changed or project_deployment_template_result.changed
+    - not (project_deployment_remote_path | ifalatik.docker.any_regex_matches(project_deployment_regex_ignore_changes_remote_paths))
   notify: ["Stop project", "Start project"]
-
-...

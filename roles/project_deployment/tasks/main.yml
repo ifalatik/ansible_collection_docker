@@ -33,7 +33,7 @@
   ansible.builtin.include_tasks: "deploy_project.yml"
   vars:
     current_project: "{{ project }}"
-  when: "project_deployment_projects_to_deploy|length==0 or project.key in project_deployment_projects_to_deploy"
+  when: "project_deployment_projects_to_deploy | length==0 or project.key in project_deployment_projects_to_deploy"
   with_dict: "{{ project_deployment_projects }}"
   loop_control:
     loop_var: "project"
