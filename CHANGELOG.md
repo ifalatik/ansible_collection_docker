@@ -1,5 +1,11 @@
 # CHANGELOG
 
+# v3.4.1
+
+## project_deployment
+
+- fix: regression during subdirectory deployment not using valid default value for mode
+
 # v3.4.0
 
 ## project_deployment

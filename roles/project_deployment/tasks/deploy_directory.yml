@@ -44,7 +44,7 @@
 - name: "Deploy subdirectories for {{ project_deployment_project_name }}"
   ansible.builtin.file:
     path: "{{ project_deployment_remote_paths_subdirs[subdir.path] }}"
-    mode: "{{ project_deployment_permission_overrides[subdir.path]['mode'] | default(project_deployment_default_mode_subdirs[subdir.path]) }}"
+    mode: "{{ project_deployment_permission_overrides[subdir.path]['mode'] | default(project_deployment_directory_mode) }}"
     owner: "{{ project_deployment_permission_overrides[subdir.path]['owner'] | default(project_deployment_owner) }}"
     group: "{{ project_deployment_permission_overrides[subdir.path]['group'] | default(project_deployment_group) }}"
     state: "directory"
