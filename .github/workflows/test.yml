@@ -79,7 +79,7 @@ jobs:
         working-directory: ${{ env.source_directory }}
 
       - name: Install the collection artifact
-        run: ansible-galaxy collection install ./ifalatik-docker-3.5.0.tar.gz --pre -p ~/.ansible/collections --force
+        run: ansible-galaxy collection install ./ifalatik-docker-*.tar.gz --pre -p ~/.ansible/collections --force
         working-directory: ${{ env.source_directory }}
 
       - name: Print the ansible version
