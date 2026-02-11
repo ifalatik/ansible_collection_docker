@@ -18,5 +18,3 @@
   become: true
   ignore_errors: "{{ ansible_check_mode }}"  # the directory might not exist
   # TODO: add a nicer check for the directory existence
-
-...

@@ -79,5 +79,3 @@
 
 - name: "Restart project if it was updated"
   ansible.builtin.meta: "flush_handlers"
-
-...

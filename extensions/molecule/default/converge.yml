@@ -127,4 +127,3 @@
             owner: "root"
             group: "docker"
             mode: "0644"  # instead of 0664
-...

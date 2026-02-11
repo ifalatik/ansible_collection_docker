@@ -37,5 +37,3 @@
   with_dict: "{{ project_deployment_projects }}"
   loop_control:
     loop_var: "project"
-
-...
