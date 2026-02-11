@@ -1,7 +1,11 @@
 #!/bin/bash -eu
 
+# Nested Docker can fail with overlay-based drivers depending on host kernel/filesystem.
+# Default to vfs for molecule stability, but allow overriding via environment.
+DOCKERD_STORAGE_DRIVER="${DOCKERD_STORAGE_DRIVER:-vfs}"
+
 # Start Docker daemon in the background
-/usr/bin/dockerd &
+/usr/bin/dockerd --storage-driver "${DOCKERD_STORAGE_DRIVER}" &
 
 # Wait until Docker daemon is running
 tries=0
