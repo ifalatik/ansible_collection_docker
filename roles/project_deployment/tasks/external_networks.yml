@@ -59,7 +59,7 @@
     ipam_config: "{{ project_deployment_ipam_config | default(omit) }}"
     ipam_driver: "{{ current_network.value.ipam.driver | default(omit) }}"
     ipam_driver_options: "{{ current_network.value.ipam.options | default(omit) }}"
-    labels: "{{ network_labels | default(omit) }}"
+    labels: "{{ project_deployment_network_labels | default(omit) }}"
     state: present
   become: true
   become_user: "{{ project_deployment_docker_user }}"
