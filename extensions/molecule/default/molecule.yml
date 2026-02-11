@@ -6,7 +6,7 @@ driver:
 platforms:
   - name: ubuntu
     dockerfile: ubuntu/Dockerfile.j2
-    image: ubuntu:20.04
+    image: ubuntu:22.04
     pre_build_image: false
     privileged: true
 
