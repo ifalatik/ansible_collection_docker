@@ -85,6 +85,12 @@ jobs:
       - name: Print the python dependencies
         run: python3 -m pip list
 
+      - name: Print Ansible collection search path and installed community.docker
+        run: |
+          ansible-config dump | grep COLLECTIONS_PATH
+          ansible-galaxy collection list community.docker
+        env:
+          ANSIBLE_COLLECTIONS_PATH: "/home/runner/collections:/home/runner/.ansible/collections:/usr/share/ansible/collections"
 
       - name: Run integration tests
         run: >-
@@ -93,8 +99,6 @@ jobs:
         env:
           ANSIBLE_FORCE_COLOR: "1"
           # Keep scenario discovery in the git checkout, but resolve collection content from installed artifact.
-          ANSIBLE_COLLECTIONS_PATHS: "/home/runner/collections:/home/runner/.ansible/collections:/usr/share/ansible/collections"
-          # Keep singular form for compatibility with environments that still consume it.
           ANSIBLE_COLLECTIONS_PATH: "/home/runner/collections:/home/runner/.ansible/collections:/usr/share/ansible/collections"
         working-directory: ${{ env.source_directory }}
 
