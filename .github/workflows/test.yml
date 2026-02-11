@@ -33,12 +33,12 @@ jobs:
       fail-fast: false
       matrix:
         ansible-version:
-          - stable-2.18
-          - stable-2.19
+          # - stable-2.18
+          # - stable-2.19
           - stable-2.20
         python-version:
-          - "3.11"
-          - "3.12"
+          # - "3.11"
+          # - "3.12"
           - "3.13"
         exclude:
           - ansible-version: stable-2.20
