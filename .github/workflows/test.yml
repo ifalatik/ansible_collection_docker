@@ -70,14 +70,14 @@ jobs:
         with:
           source_path: ${{ env.source_directory }}
 
-      - name: Build and install the collection
-        uses: ansible-network/github_actions/.github/actions/build_install_collection@main
-        with:
-          install_python_dependencies: true
-          source_path: ${{ env.source_directory }}
-          collection_path: ${{ steps.identify.outputs.collection_path }}
-          tar_file: ${{ steps.identify.outputs.tar_file }}
-          ansible_version: ${{ matrix.ansible-version }}
+      - name: Install python dependencies for tests
+        run: python3 -m pip install -r requirements.txt -r test-requirements.txt
+
+      - name: Build the collection artifact
+        run: ansible-galaxy collection build -vvv
+
+      - name: Install the collection artifact
+        run: ansible-galaxy collection install ./ifalatik-docker-3.5.0.tar.gz --pre -p ~/.ansible/collections --force
 
       - name: Print the ansible version
         run: ansible --version
@@ -85,21 +85,12 @@ jobs:
       - name: Print the python dependencies
         run: python3 -m pip list
 
-      - name: Print Ansible collection search path and installed community.docker
-        run: |
-          ansible-config dump | grep COLLECTIONS_PATH
-          ansible-galaxy collection list community.docker
-        env:
-          ANSIBLE_COLLECTIONS_PATH: "/home/runner/collections:/home/runner/.ansible/collections:/usr/share/ansible/collections"
-
       - name: Run integration tests
         run: >-
           python -m pytest tests/integration
           ${{ inputs.pytest_addopts }}
         env:
           ANSIBLE_FORCE_COLOR: "1"
-          # Keep scenario discovery in the git checkout, but resolve collection content from installed artifact.
-          ANSIBLE_COLLECTIONS_PATH: "/home/runner/collections:/home/runner/.ansible/collections:/usr/share/ansible/collections"
         working-directory: ${{ env.source_directory }}
 
       # uncomment for more verbose output
