@@ -1,10 +1,5 @@
 ---
 
-- name: Debug project_deployment_host_files_dir
-  ansible.builtin.debug:
-    var: project_deployment_host_files_dir
-  delegate_to: "localhost"
-
 - name: "Collect potential host-file"
   become: false
   ansible.builtin.stat:
@@ -16,10 +11,6 @@
     - project_deployment_host_files_dir.stat.isdir is defined
     - project_deployment_host_files_dir.stat.isdir
   register: project_deployment_potential_host_file
-
-- name: Debug potential_host_file
-  ansible.builtin.debug:
-    var: project_deployment_potential_host_file
 
 - name: "Define remote path"
   ansible.builtin.set_fact:
