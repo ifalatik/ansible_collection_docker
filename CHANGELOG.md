@@ -4,6 +4,8 @@
 
 ## project_deployment
 
+- fix: properly handle host-files overrides when deploying templates
+- fix: properly create external networks with labels
 - no longer test ansible versions below 2.18
 - chore: add ansible 2.20 to test matrix
 - chore: add python 3.13 to test matrix
