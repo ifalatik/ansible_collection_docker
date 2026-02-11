@@ -71,13 +71,16 @@ jobs:
           source_path: ${{ env.source_directory }}
 
       - name: Install python dependencies for tests
-        run: python3 -m pip install -r ${{ env.source_directory }}/requirements.txt -r ${{ env.source_directory }}/test-requirements.txt --disable-pip-version-check
+        run: python3 -m pip install -r requirements.txt -r test-requirements.txt --disable-pip-version-check
+        working-directory: ${{ env.source_directory }}
 
       - name: Build the collection artifact
         run: ansible-galaxy collection build -vvv
+        working-directory: ${{ env.source_directory }}
 
       - name: Install the collection artifact
         run: ansible-galaxy collection install ./ifalatik-docker-3.5.0.tar.gz --pre -p ~/.ansible/collections --force
+        working-directory: ${{ env.source_directory }}
 
       - name: Print the ansible version
         run: ansible --version
