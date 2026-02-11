@@ -95,7 +95,9 @@ jobs:
           ${{ inputs.pytest_addopts }}
         env:
           ANSIBLE_FORCE_COLOR: "1"
-        working-directory: ${{ steps.identify.outputs.collection_path }}
+          # Keep scenario discovery in the git checkout, but resolve collection content from installed artifact.
+          ANSIBLE_COLLECTIONS_PATH: "/home/runner/collections:/home/runner/.ansible/collections:/usr/share/ansible/collections"
+        working-directory: ${{ env.source_directory }}
 
       # uncomment for more verbose output
       # comment out the above step
