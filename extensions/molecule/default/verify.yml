@@ -45,6 +45,26 @@
         that:
           - "'redis-custom' == (redis_compose.content | b64decode | from_yaml).services.redis.container_name"
 
+    - name: Get content of rendered template file for redis
+      ansible.builtin.slurp:
+        src: "/opt/multiple/redis/config/rendered-from-template.txt"
+      register: redis_rendered_template
+
+    - name: Assert redis template was rendered from templates directory
+      ansible.builtin.assert:
+        that:
+          - "(redis_rendered_template.content | b64decode | trim) == ('template source: ' ~ inventory_hostname)"
+
+    - name: Get content of host-overridden template file for redis
+      ansible.builtin.slurp:
+        src: "/opt/multiple/redis/config/overridden-by-host.txt"
+      register: redis_host_override
+
+    - name: Assert host-specific file overrides template for redis
+      ansible.builtin.assert:
+        that:
+          - "(redis_host_override.content | b64decode | trim) == 'host file wins'"
+
     - name: Assert containers are running and healthy
       community.docker.docker_compose_v2:
         project_src: "/opt/networking/nginx"
