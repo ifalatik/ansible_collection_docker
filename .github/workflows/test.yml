@@ -71,7 +71,7 @@ jobs:
           source_path: ${{ env.source_directory }}
 
       - name: Install python dependencies for tests
-        run: python3 -m pip install -r requirements.txt -r test-requirements.txt
+        run: python3 -m pip install -r ${{ env.source_directory }}/requirements.txt -r ${{ env.source_directory }}/test-requirements.txt --disable-pip-version-check
 
       - name: Build the collection artifact
         run: ansible-galaxy collection build -vvv
