@@ -1,5 +1,16 @@
 # CHANGELOG
 
+# v3.5.0
+
+## project_deployment
+
+- no longer test ansible versions below 2.18
+- chore: add ansible 2.20 to test matrix
+- chore: add python 3.13 to test matrix
+- chore: bump molecule docker image to ubuntu 22.04
+- tests: add tests for deploying templates
+- tests: add tests for overrides of templates via host-files
+
 # v3.4.1
 
 ## project_deployment
