@@ -15,6 +15,7 @@
       become: true  # required for ansible-lint
       become_user: "{{ project_deployment_docker_user }}"
       ansible.builtin.pip:
+        break_system_packages: true
         name: "docker-py"
         state: absent
       ignore_errors: "{{ ansible_check_mode }}"
@@ -22,6 +23,7 @@
       become: true  # required for ansible-lint
       become_user: "{{ project_deployment_docker_user }}"
       ansible.builtin.pip:
+        break_system_packages: true
         name: "docker"
         state: present
       ignore_errors: "{{ ansible_check_mode }}"

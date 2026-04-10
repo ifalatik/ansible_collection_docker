@@ -1,5 +1,11 @@
 # CHANGELOG
 
+# v3.6.0
+
+## project_deployment
+
+- fix: pass break_system_packages: true for pip tasks
+
 # v3.5.0
 
 ## project_deployment
