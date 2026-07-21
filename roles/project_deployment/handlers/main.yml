@@ -9,6 +9,7 @@
   become: true
   ignore_errors: "{{ ansible_check_mode }}"  # the directory might not exist
   # TODO: add a nicer check for the directory existence
+  when: project_deployment_manage_state | default(true) | bool
 
 - name: "Start project"
   community.docker.docker_compose_v2:
@@ -18,3 +19,4 @@
   become: true
   ignore_errors: "{{ ansible_check_mode }}"  # the directory might not exist
   # TODO: add a nicer check for the directory existence
+  when: project_deployment_manage_state | default(true) | bool

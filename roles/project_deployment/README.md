@@ -65,8 +65,11 @@ The docker projects to be deployed:
         regex_ignore_changes_remote_paths:
           - regex1
           - ...
+        manage_state: true
       project2:
         ...
+
+Set `manage_state: false` on a project to deploy and update its files without the role ever starting or stopping it (useful for projects you start manually or via another mechanism). Note that flipping `manage_state` back to `true` does not start the project on its own — the project is only (re)started by the role when a deployed file changes on a subsequent run.
 
 Currently supported docker-compose keys are:
 - image

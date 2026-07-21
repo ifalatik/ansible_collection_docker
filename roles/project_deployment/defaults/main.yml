@@ -94,6 +94,10 @@ project_deployment_projects:
   #   regex_ignore_changes_remote_paths: - any path to file or directory on remote matching one of these regexes will not lead to the container being restarted
   #     - <regex>
   #     - ...
+  #   manage_state: - boolean, default true. When false, the role only deploys the project's
+  #     files and never automatically starts or stops the project via docker compose.
+  #     Note: switching this back to true does not start the project by itself; the project
+  #     is only (re)started when a deployed file changes on a subsequent run.
   # <name2>:
   #   ...
 

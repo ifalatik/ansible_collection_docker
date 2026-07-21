@@ -3,9 +3,14 @@
 # required for correct handler functionality
 # if the handler uses 'project.key' as the project-dictionary is being looped over,
 # the variable might be overwritten with the next project, therefore restarting the wrong project
+# the same applies to 'project_deployment_manage_state', which the handlers evaluate at flush time
 - name: "Set project name as variable"
   ansible.builtin.set_fact:
     project_deployment_project_name: "{{ project.key }}"
+
+- name: "Set manage state variable"
+  ansible.builtin.set_fact:
+    project_deployment_manage_state: "{{ project.value.manage_state | default(true) | bool }}"
 
 - name: "Define project directory variable"
   ansible.builtin.set_fact:

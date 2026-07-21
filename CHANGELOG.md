@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# v3.7.0
+
+## project_deployment
+
+- feat: add per-project `manage_state` option (default `true`) to deploy a project's files without the role automatically starting or stopping it
+- tests: add molecule coverage for a project with `manage_state: false` mixed with a managed project
+
 # v3.6.0
 
 ## project_deployment

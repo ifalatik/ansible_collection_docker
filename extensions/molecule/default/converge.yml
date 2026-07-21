@@ -127,3 +127,29 @@
             owner: "root"
             group: "docker"
             mode: "0644"  # instead of 0664
+
+    # unmanaged project first, managed project second:
+    # exercises the skipped handlers and the manage_state fact being overwritten for the next project
+    - name: Run Project Deployment with unmanaged project state
+      ansible.builtin.include_role:
+        name: ifalatik.docker.project_deployment
+      vars:
+        project_deployment_base_path: "/opt/unmanaged/"
+        project_deployment_projects:
+          - nginx_unmanaged:
+              manage_state: false
+              services:
+                nginx_unmanaged:
+                  image: "nginx:alpine"
+                  container_name: "nginx_unmanaged"
+          - nginx_managed_mixed:
+              manage_state: true
+              services:
+                nginx_managed_mixed:
+                  image: "nginx:alpine"
+                  container_name: "nginx_managed_mixed"
+                  healthcheck:
+                    test: "curl --fail http://localhost:80 || exit 1"
+                    interval: "10s"
+                    timeout: "5s"
+                    retries: 3

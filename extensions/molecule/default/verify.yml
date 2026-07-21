@@ -146,3 +146,32 @@
           - docker_compose_stat.stat.mode == "0644"
           - docker_compose_stat.stat.pw_name == "root"
           - docker_compose_stat.stat.gr_name == "docker"
+
+    - name: Get stat for docker-compose.yml of unmanaged project
+      ansible.builtin.stat:
+        path: "/opt/unmanaged/nginx_unmanaged/docker-compose.yml"
+      register: unmanaged_compose_stat
+    - name: Assert files were deployed for unmanaged project
+      ansible.builtin.assert:
+        that:
+          - unmanaged_compose_stat.stat.exists
+
+    - name: Get info on unmanaged container
+      community.docker.docker_container_info:
+        name: "nginx_unmanaged"
+      register: unmanaged_container
+    - name: Assert unmanaged container was never started
+      ansible.builtin.assert:
+        that:
+          - not unmanaged_container.exists
+
+    - name: Assert managed container in mixed run is running and healthy
+      community.docker.docker_compose_v2:
+        project_src: "/opt/unmanaged/nginx_managed_mixed"
+        services:
+          - "nginx_managed_mixed"
+        state: "present"
+        wait: true
+        wait_timeout: 35
+      register: result
+      failed_when: result.changed
